@@ -64,7 +64,7 @@ export default function AdminLayout({
         lg:relative lg:translate-x-0
       `}>
         <div className="flex items-center mb-8">
-          <MessageSquare className="h-8 w-8 text-indigo-400 mr-2" />
+          {/* <MessageSquare className="h-8 w-8 text-indigo-400 mr-2" /> */}
           <span className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-pink-500 via-purple-500 to-indigo-500">VIKMID</span>
         </div>
         <nav className="flex-1">
@@ -72,11 +72,12 @@ export default function AdminLayout({
             {viewMode === 'creator' ? (
               <>
 
-                <li><Link href="link-in-bio" className="flex items-center p-2 hover:text-indigo-400 transition-colors"><LinkIcon className="mr-2" /> Link in Bio</Link></li>
-                <li><Link href="course" className="flex items-center p-2 rounded-lg hover:bg-gradient-to-r hover:from-pink-500 hover:via-purple-500 hover:to-indigo-500 text-gray-300 hover:text-white transition-colors"><BookOpen className="mr-2" /> Courses</Link></li>
-                <li><Link href="store" className="flex items-center p-2 rounded-lg hover:bg-gradient-to-r hover:from-pink-500 hover:via-purple-500 hover:to-indigo-500 text-gray-300 hover:text-white transition-colors"><ShoppingBag className="mr-2" /> Store</Link></li>
-                <li><Link href="booking" className="flex items-center p-2 rounded-lg hover:bg-gradient-to-r hover:from-pink-500 hover:via-purple-500 hover:to-indigo-500 text-gray-300 hover:text-white transition-colors"><Calendar className="mr-2" /> Bookings</Link></li>
-                <li><Link href="#" className="flex items-center p-2 rounded-lg hover:bg-gradient-to-r hover:from-pink-500 hover:via-purple-500 hover:to-indigo-500 text-gray-300 hover:text-white transition-colors"><CreditCard className="mr-2" /> Subscriptions</Link></li>
+                <li><Link href="/link-in-bio" className="flex items-center p-2 hover:text-indigo-400 transition-colors"><LinkIcon className="mr-2" /> Link in Bio</Link></li>
+                <li><Link href="/course" className="flex items-center p-2 rounded-lg hover:bg-gradient-to-r hover:from-pink-500 hover:via-purple-500 hover:to-indigo-500 text-gray-300 hover:text-white transition-colors"><BookOpen className="mr-2" /> Courses</Link></li>
+                <li><Link href="/store" className="flex items-center p-2 rounded-lg hover:bg-gradient-to-r hover:from-pink-500 hover:via-purple-500 hover:to-indigo-500 text-gray-300 hover:text-white transition-colors"><ShoppingBag className="mr-2" /> Store</Link></li>
+                <li><Link href="/booking" className="flex items-center p-2 rounded-lg hover:bg-gradient-to-r hover:from-pink-500 hover:via-purple-500 hover:to-indigo-500 text-gray-300 hover:text-white transition-colors"><Calendar className="mr-2" /> Bookings</Link></li>
+                <li><Link href="/contest" className="flex items-center p-2 rounded-lg hover:bg-gradient-to-r hover:from-pink-500 hover:via-purple-500 hover:to-indigo-500 text-gray-300 hover:text-white transition-colors"><Calendar className="mr-2" /> Contest</Link></li>
+                <li><Link href="/subscription" className="flex items-center p-2 rounded-lg hover:bg-gradient-to-r hover:from-pink-500 hover:via-purple-500 hover:to-indigo-500 text-gray-300 hover:text-white transition-colors"><CreditCard className="mr-2" /> Subscriptions</Link></li>
                 <li><Link href="#" className="flex items-center p-2 rounded-lg hover:bg-gradient-to-r hover:from-pink-500 hover:via-purple-500 hover:to-indigo-500 text-gray-300 hover:text-white transition-colors"><Mail className="mr-2" /> Email & SMS</Link></li>
               </>
             ) : (
@@ -84,7 +85,7 @@ export default function AdminLayout({
                 <li><Link href="#" className="flex items-center p-2 rounded-lg hover:bg-gradient-to-r hover:from-pink-500 hover:via-purple-500 hover:to-indigo-500 text-gray-300 hover:text-white transition-colors"><BookOpen className="mr-2" /> My Courses</Link></li>
                 <li><Link href="#" className="flex items-center p-2 rounded-lg hover:bg-gradient-to-r hover:from-pink-500 hover:via-purple-500 hover:to-indigo-500 text-gray-300 hover:text-white transition-colors"><ShoppingBag className="mr-2" /> My Purchases</Link></li>
                 <li><Link href="#" className="flex items-center p-2 rounded-lg hover:bg-gradient-to-r hover:from-pink-500 hover:via-purple-500 hover:to-indigo-500 text-gray-300 hover:text-white transition-colors"><Calendar className="mr-2" /> My Bookings</Link></li>
-                <li><Link href="#" className="flex items-center p-2 rounded-lg hover:bg-gradient-to-r hover:from-pink-500 hover:via-purple-500 hover:to-indigo-500 text-gray-300 hover:text-white transition-colors"><Users className="mr-2" /> Subscriptions</Link></li>
+                <li><Link href="/my-subscription" className="flex items-center p-2 rounded-lg hover:bg-gradient-to-r hover:from-pink-500 hover:via-purple-500 hover:to-indigo-500 text-gray-300 hover:text-white transition-colors"><Users className="mr-2" /> My Subscriptions</Link></li>
               </>
             )}
           </ul>

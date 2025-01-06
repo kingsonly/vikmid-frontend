@@ -18,10 +18,10 @@ export default function RootLayout({
     <div className="flex flex-col min-h-screen bg-gray-900 text-gray-100">
       <header className="px-4 lg:px-6 h-16 flex items-center sticky top-0 z-50 backdrop-blur-md bg-gray-900/80">
         <Link className="flex items-center justify-center" href="#">
-          <MessageSquare className="h-6 w-6 text-indigo-400" />
+          {/* <MessageSquare className="h-6 w-6 text-indigo-400" /> */}
           <span className="ml-2 text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-indigo-400 to-purple-600">VIKMID</span>
         </Link>
-        <nav className="ml-auto flex gap-4 sm:gap-6">
+        {/* <nav className="ml-auto flex gap-4 sm:gap-6">
           <Link className="text-sm font-medium hover:text-indigo-400 transition-colors" href="#">
             Features
           </Link>
@@ -34,7 +34,7 @@ export default function RootLayout({
           <Link className="text-sm font-medium hover:text-indigo-400 transition-colors" href="#">
             Contact
           </Link>
-        </nav>
+        </nav> */}
       </header>
       {children}
       <footer className="w-full py-6 px-4 md:px-6 border-t border-gray-800 bg-gray-900">
