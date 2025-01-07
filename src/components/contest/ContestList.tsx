@@ -6,8 +6,8 @@ import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
-import { Toast } from "@/components/ui/toast"
 import { Trophy, Users, Coins, Clock } from 'lucide-react'
+import { useToast } from "@/hooks/use-toast"
 
 // Mock data for available contests
 const availableContests = [
@@ -97,8 +97,9 @@ export default function ContestList(params: any) {
     }
 
     const handleConfirmRegistration = (contest) => {
+        const { toast } = useToast()
         // In a real application, this would send a request to the server to register the user
-        Toast({
+        toast({
             title: "Registration Successful!",
             description: `You have successfully registered for "${contest.name}".`,
         })

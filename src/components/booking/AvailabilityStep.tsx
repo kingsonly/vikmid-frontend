@@ -5,8 +5,8 @@ import { Button } from "@/components/ui/button"
 import { Checkbox } from "@/components/ui/checkbox"
 import { Label } from "@/components/ui/label"
 import { Input } from "@/components/ui/input"
-import { toast } from "@/components/ui/toast"
 import { Clock } from 'lucide-react'
+import { useToast } from "@/hooks/use-toast"
 
 const days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']
 
@@ -38,6 +38,7 @@ const TimeRangeSelector = ({ start, end, onChange, onRemove }) => {
 }
 
 export function AvailabilityStep({ onNext }) {
+    const { toast } = useToast()
     const [availability, setAvailability] = useState({})
 
     const handleDayChange = (day, isChecked) => {

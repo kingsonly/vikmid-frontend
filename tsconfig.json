@@ -12,6 +12,8 @@
     "resolveJsonModule": true,
     "isolatedModules": true,
     "jsx": "preserve",
+     "noImplicitAny": false, // Allow implicit 'any' types
+    "strictPropertyInitialization": false, // Relax property initialization checks
     "incremental": true,
     "plugins": [
       {

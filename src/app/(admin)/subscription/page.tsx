@@ -265,8 +265,8 @@ const TierDetailsDialog = ({ tier, onClose }) => (
 
 export default function SubscriptionManagement() {
     const [subscriptionTiers, setSubscriptionTiers] = useState(initialSubscriptionTiers)
-    const [editingTier, setEditingTier] = useState(null)
-    const [viewingTierDetails, setViewingTierDetails] = useState(null)
+    const [editingTier, setEditingTier] = useState<any>(null)
+    const [viewingTierDetails, setViewingTierDetails] = useState<any>(null)
 
     const handleSaveTier = (tierData) => {
         if (tierData.id) {

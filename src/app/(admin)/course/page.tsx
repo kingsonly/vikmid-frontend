@@ -25,8 +25,8 @@ const mockCourses = [
     title: "Web Development Fundamentals",
     description: "Learn the basics of web development including HTML, CSS, and JavaScript.",
     price: 49.99,
-    students: 120,
-    batches: 2,
+    totalStudents: 120,
+    totalBatches: 2,
     lastUpdated: "2023-06-15",
     banner: "/placeholder.svg?height=400&width=800",
     content: [
@@ -53,7 +53,7 @@ const mockCourses = [
 
 export default function Course() {
   const [courses, setCourses] = useState(mockCourses)
-  const [selectedCourse, setSelectedCourse] = useState(null)
+  const [selectedCourse, setSelectedCourse] = useState<any>(null)
   const [isCreatingCourse, setIsCreatingCourse] = useState(false)
   const [newCourse, setNewCourse] = useState({
     title: "",
@@ -61,7 +61,7 @@ export default function Course() {
     price: 0,
     banner: "/placeholder.svg?height=400&width=800",
   })
-  const fileInputRef = useRef(null)
+  const fileInputRef = useRef<any>(null)
 
   const handleCreateCourse = () => {
     if (newCourse.title && newCourse.description && newCourse.price) {
@@ -74,7 +74,7 @@ export default function Course() {
         comments: [],
         lastUpdated: new Date().toISOString().split('T')[0]
       }
-      setCourses([...courses, course])
+      setCourses([...courses, course as any])
       setNewCourse({ title: "", description: "", price: 0, banner: "/placeholder.svg?height=400&width=800" })
       setIsCreatingCourse(false)
     }
@@ -89,7 +89,7 @@ export default function Course() {
     if (file) {
       const reader = new FileReader()
       reader.onloadend = () => {
-        setNewCourse({ ...newCourse, banner: reader.result })
+        setNewCourse({ ...newCourse, banner: reader.result as any })
       }
       reader.readAsDataURL(file)
     }

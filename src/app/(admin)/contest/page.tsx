@@ -23,7 +23,7 @@ const mockContests = [
     { id: 4, name: "Ultimate Creator Challenge", type: "Hybrid", entryFee: 200, participants: 50, totalPrize: 15000 },
 ]
 
-const ContestCard = ({ contest, onEdit, onDelete }) => (
+const ContestCard = ({ contest, onEdit, onDelete }: { contest: any, onEdit: any, onDelete: any }) => (
     <Card className="bg-gray-800 text-white">
         <CardHeader>
             <CardTitle className="flex justify-between items-center">
@@ -59,7 +59,7 @@ const ContestCard = ({ contest, onEdit, onDelete }) => (
     </Card>
 )
 
-const CreateContestForm = ({ onSubmit, initialData = null }) => {
+const CreateContestForm = ({ onSubmit, initialData = null }: { onSubmit: any, initialData?: any }) => {
     const [formData, setFormData] = useState(initialData || {
         name: '',
         type: 'Standalone',
@@ -69,7 +69,7 @@ const CreateContestForm = ({ onSubmit, initialData = null }) => {
         isCoinsRequired: false,
     })
 
-    const handleSubmit = (e) => {
+    const handleSubmit = (e: any) => {
         e.preventDefault()
         onSubmit(formData)
     }
@@ -156,7 +156,7 @@ export default function ContestManagement() {
     const [contests, setContests] = useState(mockContests)
     const [editingContest, setEditingContest] = useState(null)
 
-    const handleCreateContest = (newContest) => {
+    const handleCreateContest = (newContest: any) => {
         setContests([...contests, { ...newContest, id: contests.length + 1, participants: 0 }])
         // toast({
         //     title: "Contest Created",
@@ -164,7 +164,7 @@ export default function ContestManagement() {
         // })
     }
 
-    const handleEditContest = (updatedContest) => {
+    const handleEditContest = (updatedContest: any) => {
         setContests(contests.map(contest =>
             contest.id === updatedContest.id ? { ...contest, ...updatedContest } : contest
         ))
@@ -175,7 +175,7 @@ export default function ContestManagement() {
         // })
     }
 
-    const handleDeleteContest = (id) => {
+    const handleDeleteContest = (id: any) => {
         setContests(contests.filter(contest => contest.id !== id))
         // toast({
         //     title: "Contest Deleted",

@@ -9,7 +9,7 @@ import { Badge } from "@/components/ui/badge"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
 import { Book, ShoppingBag, Award, Film, Phone, MessageCircle, CoinsIcon, PlayCircle } from 'lucide-react'
-import { toast } from "@/components/ui/use-toast"
+import { useToast } from "@/hooks/use-toast"
 
 // Mock data for a creator's exclusive content
 const creatorData = {
@@ -130,6 +130,7 @@ const ContentDialog = ({ content }) => (
 )
 
 const CoursesArea = ({ courses }) => {
+    const { toast } = useToast()
     const handleEnroll = (course) => {
         toast({
             title: "Enrolled Successfully!",
@@ -162,6 +163,7 @@ const CoursesArea = ({ courses }) => {
 }
 
 const ContestsArea = ({ contests }) => {
+    const { toast } = useToast()
     const handleEnterContest = (contest) => {
         toast({
             title: "Contest Entered!",

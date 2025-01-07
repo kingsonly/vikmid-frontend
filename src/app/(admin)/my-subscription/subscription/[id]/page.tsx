@@ -9,9 +9,10 @@ import { Badge } from "@/components/ui/badge"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
 import { Book, ShoppingBag, Award, Film, Phone, MessageCircle, CoinsIcon, PlayCircle } from 'lucide-react'
-import { toast } from "@/components/ui/use-toast"
 import { useRouter } from 'next/router'
 import ContestList from '@/components/contest/ContestList'
+import { useToast } from "@/hooks/use-toast"
+
 // Mock data for a creator's exclusive content
 const creatorData = {
     id: 1,
@@ -287,7 +288,7 @@ const MessagingArea = () => (
 )
 
 export default function Page({ params }) {
-    const unwrappedParams = use(params)
+    const unwrappedParams = use<any>(params)
 
     useEffect(() => {
 

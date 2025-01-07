@@ -21,7 +21,7 @@ const products = [
 
 export default function StoreManagement() {
   const [isCreatingProduct, setIsCreatingProduct] = useState(false)
-  const [selectedProduct, setSelectedProduct] = useState(null)
+  const [selectedProduct, setSelectedProduct] = useState<any>(null)
   const [activeTab, setActiveTab] = useState('products')
 
   const handleProductSelect = (product) => {

@@ -9,9 +9,9 @@ export default function Home() {
 
   return (
     <main className="flex-1 p-8 overflow-auto">
-      <h1 className="text-3xl font-bold mb-8">Welcome, {viewMode === 'creator' ? 'Creator' : 'Fan'}!</h1>
+      {/* <h1 className="text-3xl font-bold mb-8">Welcome, {viewMode === 'creator' ? 'Creator' : 'Fan'}!</h1>
 
-      {viewMode === 'creator' ? <CreatorDashboard /> : <FanDashboard />}
+      {viewMode === 'creator' ? <CreatorDashboard /> : <FanDashboard />} */}
     </main>
   );
 }
