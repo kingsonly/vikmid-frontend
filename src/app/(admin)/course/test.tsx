@@ -1,6 +1,7 @@
 "use client";
 
-import { useState, useRef, useCallback, useEffect } from "react";
+import { useState, useRef } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import {
   Card,
   CardContent,
@@ -14,6 +15,14 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import { Switch } from "@/components/ui/switch";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import {
   Table,
   TableBody,
@@ -24,19 +33,119 @@ import {
 } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
+import {
   Dialog,
   DialogContent,
   DialogDescription,
   DialogFooter,
   DialogHeader,
   DialogTitle,
+  DialogTrigger,
 } from "@/components/ui/dialog";
-import { Book, Video, FileAudio, FileText, List, Users, Calendar, BadgeCheck, MessageSquare, Plus, Pencil, Trash2, Eye, ArrowUpDown, DollarSign, ImageIcon, ChevronLeft } from 'lucide-react';
+import { ScrollArea } from "@/components/ui/scroll-area";
+import {
+  Book,
+  Video,
+  FileAudio,
+  FileText,
+  List,
+  Users,
+  Calendar,
+  BadgeCheck,
+  MessageSquare,
+  Plus,
+  Pencil,
+  Trash2,
+  Eye,
+  ArrowUpDown,
+  DollarSign,
+  ImageIcon,
+  ChevronLeft,
+} from "lucide-react";
 import Image from "next/image";
 
+// Mock data (same as before)
+const mockCourses = [
+  {
+    id: 1,
+    title: "Web Development Fundamentals",
+    description:
+      "Learn the basics of web development including HTML, CSS, and JavaScript.",
+    price: 49.99,
+    totalStudents: 120,
+    totalBatches: 2,
+    lastUpdated: "2023-06-15",
+    banner: "/placeholder.svg?height=400&width=800",
+    content: [
+      {
+        id: 1,
+        title: "Introduction to HTML",
+        type: "video",
+        duration: "15:30",
+      },
+      { id: 2, title: "CSS Basics", type: "video", duration: "20:45" },
+      { id: 3, title: "JavaScript Fundamentals", type: "pdf", size: "2.5 MB" },
+      { id: 4, title: "Web Development Quiz", type: "mcq", questions: 10 },
+    ],
+    batches: [
+      {
+        id: 1,
+        name: "Summer 2023",
+        startDate: "2023-06-01",
+        endDate: "2023-08-31",
+        students: 50,
+      },
+      {
+        id: 2,
+        name: "Fall 2023",
+        startDate: "2023-09-01",
+        endDate: "2023-11-30",
+        students: 70,
+      },
+    ],
+    students: [
+      {
+        id: 1,
+        name: "John Doe",
+        email: "john@example.com",
+        progress: 75,
+        joinedDate: "2023-05-10",
+      },
+      {
+        id: 2,
+        name: "Jane Smith",
+        email: "jane@example.com",
+        progress: 90,
+        joinedDate: "2023-05-15",
+      },
+    ],
+    comments: [
+      {
+        id: 1,
+        user: "Alice",
+        content: "Great explanation of CSS flexbox!",
+        date: "2023-06-20",
+        replies: 2,
+      },
+      {
+        id: 2,
+        user: "Charlie",
+        content: "Could you provide more examples for JavaScript closures?",
+        date: "2023-06-22",
+        replies: 1,
+      },
+    ],
+  },
+  // Add more mock courses here...
+];
+
 export default function Course() {
-  const [courses, setCourses] = useState<any[]>([]);
-  const [displayedCourses, setDisplayedCourses] = useState<any[]>([]);
+  const [courses, setCourses] = useState(mockCourses);
   const [selectedCourse, setSelectedCourse] = useState<any>(null);
   const [isCreatingCourse, setIsCreatingCourse] = useState(false);
   const [newCourse, setNewCourse] = useState({
@@ -45,59 +154,20 @@ export default function Course() {
     price: 0,
     banner: "/placeholder.svg?height=400&width=800",
   });
-  const [loading, setLoading] = useState(false);
   const fileInputRef = useRef<any>(null);
-  const observerRef = useRef<any>(null);
-
-  const loadMoreCourses = useCallback(() => {
-    if (loading) return;
-    setLoading(true);
-    setTimeout(() => {
-      const nextCourses = courses.slice(displayedCourses.length, displayedCourses.length + 10);
-      setDisplayedCourses(prevCourses => [...prevCourses, ...nextCourses]);
-      setLoading(false);
-    }, 1000);
-  }, [loading, courses, displayedCourses.length]);
-
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      entries => {
-        if (entries[0].isIntersecting && !loading && displayedCourses.length < courses.length) {
-          loadMoreCourses();
-        }
-      },
-      { threshold: 1 }
-    );
-
-    if (observerRef.current) {
-      observer.observe(observerRef.current);
-    }
-
-    return () => {
-      if (observerRef.current) {
-        observer.unobserve(observerRef.current);
-      }
-    };
-  }, [loadMoreCourses, loading, displayedCourses.length, courses.length]);
-
-  useEffect(() => {
-    setDisplayedCourses(courses.slice(0, 10));
-  }, [courses]);
 
   const handleCreateCourse = () => {
     if (newCourse.title && newCourse.description && newCourse.price) {
       const course = {
-        id: Date.now(),
+        id: courses.length + 1,
         ...newCourse,
-        totalStudents: 0,
-        totalBatches: 0,
-        lastUpdated: new Date().toISOString().split("T")[0],
         students: [],
         batches: [],
         content: [],
         comments: [],
+        lastUpdated: new Date().toISOString().split("T")[0],
       };
-      setCourses(prevCourses => [...prevCourses, course]);
+      setCourses([...courses, course as any]);
       setNewCourse({
         title: "",
         description: "",
@@ -108,17 +178,16 @@ export default function Course() {
     }
   };
 
-  const handleDeleteCourse = (id: number) => {
-    setCourses(prevCourses => prevCourses.filter((course) => course.id !== id));
-    setDisplayedCourses(prevDisplayed => prevDisplayed.filter((course) => course.id !== id));
+  const handleDeleteCourse = (id) => {
+    setCourses(courses.filter((course) => course.id !== id));
   };
 
-  const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
+  const handleImageUpload = (event) => {
+    const file = event.target.files[0];
     if (file) {
       const reader = new FileReader();
       reader.onloadend = () => {
-        setNewCourse({ ...newCourse, banner: reader.result as string });
+        setNewCourse({ ...newCourse, banner: reader.result as any });
       };
       reader.readAsDataURL(file);
     }
@@ -136,64 +205,49 @@ export default function Course() {
         </Button>
       </div>
 
-      {displayedCourses.length === 0 ? (
-        <div className="text-center py-10">
-          <p className="text-xl text-gray-400">You haven't created any courses yet.</p>
-          <p className="text-gray-500 mt-2">Click the 'Create New Course' button to get started!</p>
-        </div>
-      ) : (
-        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-          {displayedCourses.map((course) => (
-            <Card key={course.id} className="bg-gray-800 border-gray-700">
-              <CardHeader>
-                <Image
-                  src={course.banner}
-                  alt={course.title}
-                  width={400}
-                  height={200}
-                  className="rounded-lg object-cover w-full h-40"
-                />
-                <CardTitle className="mt-4">{course.title}</CardTitle>
-                <CardDescription className="text-gray-400">
-                  {course.description.substring(0, 100)}...
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="flex justify-between items-center">
-                  <Badge variant="secondary" className="bg-purple-500 text-white">
-                    ₦{course.price}
-                  </Badge>
-                  <span className="text-sm text-gray-400">
-                    {course.students.length} students
-                  </span>
-                </div>
-              </CardContent>
-              <CardFooter className="flex justify-between">
-                <Button
-                  variant="outline"
-                  onClick={() => setSelectedCourse(course)}
-                >
-                  Manage
-                </Button>
-                <Button
-                  variant="destructive"
-                  onClick={() => handleDeleteCourse(course.id)}
-                >
-                  Delete
-                </Button>
-              </CardFooter>
-            </Card>
-          ))}
-        </div>
-      )}
-      
-      {courses.length > 10 && (
-        <div ref={observerRef} className="flex justify-center py-4">
-          {loading && (
-            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-purple-500"></div>
-          )}
-        </div>
-      )}
+      <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+        {courses.map((course) => (
+          <Card key={course.id} className="bg-gray-800 border-gray-700">
+            <CardHeader>
+              <Image
+                src={course.banner}
+                alt={course.title}
+                width={400}
+                height={200}
+                className="rounded-lg object-cover w-full h-40"
+              />
+              <CardTitle className="mt-4">{course.title}</CardTitle>
+              <CardDescription className="text-gray-400">
+                {course.description.substring(0, 100)}...
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="flex justify-between items-center">
+                <Badge variant="secondary" className="bg-purple-500 text-white">
+                  ₦{course.price}
+                </Badge>
+                <span className="text-sm text-gray-400">
+                  {course.students.length} students
+                </span>
+              </div>
+            </CardContent>
+            <CardFooter className="flex justify-between">
+              <Button
+                variant="outline"
+                onClick={() => setSelectedCourse(course)}
+              >
+                Manage
+              </Button>
+              <Button
+                variant="destructive"
+                onClick={() => handleDeleteCourse(course.id)}
+              >
+                Delete
+              </Button>
+            </CardFooter>
+          </Card>
+        ))}
+      </div>
     </div>
   );
 
@@ -204,7 +258,7 @@ export default function Course() {
       </Button>
       <h2 className="text-2xl font-semibold">{selectedCourse.title}</h2>
       <Tabs defaultValue="overview" className="w-full">
-        <TabsList className="grid w-full grid-cols-5 bg-black text-white">
+        <TabsList className="grid w-full grid-cols-5">
           <TabsTrigger value="overview">Overview</TabsTrigger>
           <TabsTrigger value="content">Content</TabsTrigger>
           <TabsTrigger value="students">Students</TabsTrigger>
@@ -216,7 +270,7 @@ export default function Course() {
             <CardHeader>
               <CardTitle>Course Overview</CardTitle>
             </CardHeader>
-            <CardContent className="space-y-4 ">
+            <CardContent className="space-y-4">
               <div>
                 <Label htmlFor="edit-course-title">Course Title</Label>
                 <Input
@@ -304,7 +358,7 @@ export default function Course() {
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {selectedCourse.content.map((item: any) => (
+                  {selectedCourse.content.map((item) => (
                     <TableRow key={item.id}>
                       <TableCell className="font-medium">
                         {item.title}
@@ -358,7 +412,7 @@ export default function Course() {
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {selectedCourse.students.map((student: any) => (
+                  {selectedCourse.students.map((student) => (
                     <TableRow key={student.id}>
                       <TableCell className="font-medium">
                         {student.name}
@@ -405,7 +459,7 @@ export default function Course() {
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {selectedCourse.batches.map((batch: any) => (
+                  {selectedCourse.batches.map((batch) => (
                     <TableRow key={batch.id}>
                       <TableCell className="font-medium">
                         {batch.name}
@@ -451,7 +505,7 @@ export default function Course() {
                       </TableRow>
                     </TableHeader>
                     <TableBody>
-                      {selectedCourse.comments.map((comment: any) => (
+                      {selectedCourse.comments.map((comment) => (
                         <TableRow key={comment.id}>
                           <TableCell className="font-medium">
                             {comment.user}
@@ -604,4 +658,3 @@ export default function Course() {
     </div>
   );
 }
-
