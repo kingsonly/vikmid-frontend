@@ -7,8 +7,7 @@ import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 
 export function PhysicalProductDetails({ onNext }) {
-    const handleSubmit = (event: React.FormEvent) => {
-        event.preventDefault()
+    const handleSubmit = (event: React.FormEvent) => {   event.preventDefault()
         const formData = new FormData(event.target as HTMLFormElement)
         const data = Object.fromEntries(formData)
         onNext({ details: data })

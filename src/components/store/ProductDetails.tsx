@@ -1,12 +1,12 @@
 'use client'
-
+ 
 import React from 'react'
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Package, ShoppingBag, Edit, Trash2 } from 'lucide-react'
 import Image from 'next/image'
 import { ProductActivity } from '@/components/store/ProductActivity'
-
+ 
 export function ProductDetails({ product }) {
     return (
         <Card className="bg-gray-800 border-gray-700">
