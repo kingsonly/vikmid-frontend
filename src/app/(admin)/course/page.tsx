@@ -70,6 +70,7 @@ export default function Course() {
     );
 
     if (observerRef.current) {
+      alert(123)
       observer.observe(observerRef.current);
     }
 
@@ -186,7 +187,7 @@ export default function Course() {
           ))}
         </div>
       )}
-      
+
       {courses.length > 10 && (
         <div ref={observerRef} className="flex justify-center py-4">
           {loading && (
@@ -208,8 +209,8 @@ export default function Course() {
           <TabsTrigger value="overview">Overview</TabsTrigger>
           <TabsTrigger value="content">Content</TabsTrigger>
           <TabsTrigger value="students">Students</TabsTrigger>
-          <TabsTrigger value="batches">Batches</TabsTrigger>
-          <TabsTrigger value="engagement">Engagement</TabsTrigger>
+          {/* <TabsTrigger value="batches">Batches</TabsTrigger>
+          <TabsTrigger value="engagement">Engagement</TabsTrigger> */}
         </TabsList>
         <TabsContent value="overview">
           <Card>
@@ -484,9 +485,9 @@ export default function Course() {
     <div className="flex flex-col min-h-screen bg-gray-900 text-gray-100 w-full">
       <main className="flex-1 p-4 sm:p-6 lg:p-8 overflow-auto">
         <div className="max-w-7xl mx-auto ">
-            <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold mb-6 sm:mb-8 bg-clip-text text-transparent bg-gradient-to-r from-pink-500 to-purple-500">
-              Course Management
-            </h1>
+          <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold mb-6 sm:mb-8 bg-clip-text text-transparent bg-gradient-to-r from-pink-500 to-purple-500">
+            Course Management
+          </h1>
           {selectedCourse ? renderCourseManagement() : renderCourseList()}
 
           <Dialog open={isCreatingCourse} onOpenChange={setIsCreatingCourse}>
