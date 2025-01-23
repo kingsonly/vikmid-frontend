@@ -51,7 +51,7 @@ export default function AdminLayout({
       <Button
         variant="ghost"
         size="icon"
-        className="fixed top-4 left-4 z-50 lg:hidden text-white hover:bg-gradient-to-r hover:from-pink-500 hover:via-purple-500 hover:to-indigo-500"
+        className="fixed top-4 right-5 z-50 lg:hidden text-white hover:bg-gradient-to-r hover:from-pink-500 hover:via-purple-500 hover:to-indigo-500"
         onClick={toggleSidebar}
       >
         {isSidebarOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}

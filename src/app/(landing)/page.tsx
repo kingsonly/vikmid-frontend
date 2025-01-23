@@ -9,11 +9,17 @@ import { useState, useEffect } from 'react'
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-//import { toast } from "@/components/ui/use-toast"
+import { useApiCall, useGetRequest } from "@/utils/useApiCall"
+import { useRouter } from 'next/navigation';
+import { ToastContainer } from "react-toastify"
+import { GoogleAnalytics } from "nextjs-google-analytics";
+
+
 const AnimatedText = ({ words }: { words: string[] }) => {
   const [index, setIndex] = useState(0);
   const [subIndex, setSubIndex] = useState(0);
   const [reverse, setReverse] = useState(false);
+  const [blink, setBlink] = useState(true);
 
   useEffect(() => {
     if (subIndex === words[index].length + 1 && !reverse) {
@@ -29,30 +35,53 @@ const AnimatedText = ({ words }: { words: string[] }) => {
 
     const timeout = setTimeout(() => {
       setSubIndex((prev) => prev + (reverse ? -1 : 1));
-    }, Math.max(reverse ? 75 : subIndex === words[index].length ? 1000 : 150, parseInt((Math.random() * 350).toString())));
+    }, Math.max(reverse ? 50 : subIndex === words[index].length ? 1000 :
+      Math.floor(Math.random() * (120 - 80 + 1) + 80)));
 
     return () => clearTimeout(timeout);
   }, [subIndex, index, reverse, words]);
+
+  // Blink cursor effect
+  useEffect(() => {
+    const timeout2 = setTimeout(() => {
+      setBlink((prev) => !prev);
+    }, 500);
+    return () => clearTimeout(timeout2);
+  }, [blink]);
 
   return (
     <span className="bg-clip-text text-transparent bg-gradient-to-r from-pink-500 via-purple-500 to-indigo-500">
       <AnimatePresence mode="wait">
         <motion.span
-          key={`${words[index]}${subIndex}`}
+          key={index}
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, y: -20 }}
-          transition={{ duration: 0.2 }}
+          transition={{ duration: 0.3 }}
         >
-          {`${words[index].substring(0, subIndex)}${subIndex === words[index].length ? '' : '|'}`}
+          {words[index].substring(0, subIndex)}
+          <motion.span
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.2 }}
+          >
+            {blink ? "|" : "\u00A0"}
+          </motion.span>
         </motion.span>
       </AnimatePresence>
     </span>
   );
 };
 
+
 export default function Home() {
-  const [email, setEmail] = useState("")
+  const router = useRouter();
+  const { apiCall } = useApiCall();
+
+  const [email, setEmail] = useState<string>("")
+  const [name, setName] = useState<string>("")
+  const [loader, setLoader] = useState<boolean>(false)
   const [isDialogOpen, setIsDialogOpen] = useState(false)
   const features = [
     {
@@ -86,19 +115,42 @@ export default function Home() {
       description: "Communicate with your audience through email and SMS campaigns.",
     },
   ]
-  const handleWaitlistSubmit = (e: React.FormEvent) => {
+  const handleWaitlistSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    // Here you would typically send the email to your backend
-    console.log("Submitted email:", email)
-    // toast({
-    //   title: "Joined Waitlist",
-    //   description: "Thank you for joining our waitlist!",
-    // })
-    setEmail("")
-    setIsDialogOpen(false)
+    setLoader(true)
+    let data: {
+      fullName: string,
+      email: string,
+
+    } = {
+      fullName: name,
+      email: email,
+    }
+    const response = await apiCall({
+      endpoint: "/waitlist/create",
+      method: "post",
+      data: data,
+      successMessage: `Thank you ${name} for joining our waitlist!`,
+      "showToast": true
+    },
+      router
+    );
+    if (response.status == 201) {
+      setEmail("")
+      setName("")
+      setLoader(false)
+      setIsDialogOpen(false)
+
+    }
+
+
   }
+
+
   return (
     <main className="flex-1">
+      <GoogleAnalytics trackPageViews />
+      <ToastContainer autoClose={2000} />
       <section className="w-full py-12 md:py-24 lg:py-32 xl:py-48 overflow-hidden">
         <div className="container px-4 md:px-6 relative">
           <div className="flex flex-col items-center space-y-4 text-center relative z-10">
@@ -124,14 +176,24 @@ export default function Home() {
                   </DialogHeader>
                   <form onSubmit={handleWaitlistSubmit}>
                     <div className="grid gap-4 py-4">
-                      <div className="grid grid-cols-4 items-center gap-4">
-                        <Label htmlFor="email" className="text-right">
-                          Email
-                        </Label>
+                      <div className=" items-center gap-4">
+
+                        <Input
+                          id="name"
+                          type="text"
+                          value={name}
+                          placeholder="Name"
+                          onChange={(e) => setName(e.target.value)}
+                          className="col-span-3 bg-gray-700 text-white border-gray-600"
+                          required
+                        />
+                      </div>
+                      <div className=" items-center gap-4">
                         <Input
                           id="email"
                           type="email"
                           value={email}
+                          placeholder="Email"
                           onChange={(e) => setEmail(e.target.value)}
                           className="col-span-3 bg-gray-700 text-white border-gray-600"
                           required
