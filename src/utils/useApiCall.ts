@@ -14,7 +14,6 @@ const apiClient = axios.create({
 
 // API call for POST, PUT, DELETE, PATCH requests
 interface ApiCallOptions {
-  router: NextRouter;
   endpoint: string;
   method: "post" | "put" | "delete" | "patch" | "get";
   params?: any;
@@ -39,7 +38,7 @@ export const useApiCall = () => {
       successMessage = "Successful",
       showToast = true,
     }: ApiCallOptions,
-    router: NextRouter // Accept router as a parameter
+    router: any // Accept router as a parameter
   ): Promise<any> => {
     const url = process.env.NEXT_PUBLIC_API_URL;
     const baseURL = `${url}`;
@@ -89,7 +88,7 @@ export const useGetRequest = (
   endpoint: string,
   revalidate = true,
   refreshInterval?: number,
-  router: NextRouter // Accept router as a parameter
+  router?: any // Accept router as a parameter
 ) => {
   const { token } = useTokens();
   const { errorStates, updateErrorState, setToastShown } = useEndpointErrors();

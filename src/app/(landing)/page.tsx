@@ -11,6 +11,7 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { useApiCall, useGetRequest } from "@/utils/useApiCall"
 import { useRouter } from 'next/navigation';
+//import { useRouter } from 'next/router';
 import { ToastContainer } from "react-toastify"
 import { GoogleAnalytics } from "nextjs-google-analytics";
 
@@ -131,7 +132,7 @@ export default function Home() {
       method: "post",
       data: data,
       successMessage: `Thank you ${name} for joining our waitlist!`,
-      "showToast": true
+      "showToast": true,
     },
       router
     );
@@ -140,7 +141,6 @@ export default function Home() {
       setName("")
       setLoader(false)
       setIsDialogOpen(false)
-
     }
 
 

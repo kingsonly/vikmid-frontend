@@ -1,5 +1,5 @@
-import { useNavigate, useLocation } from "react-router-dom";
-import useTokens from "../hooks/useTokens";
+//import { useRouter } from "next/router"; // Import Next.js router
+import useTokens from "../hooks/useTokens"; // Assuming this hook works with Next.js
 import { useEffect } from "react";
 import { toast } from "react-toastify";
 
@@ -54,24 +54,24 @@ export function formatNumberWithCommas(number: number) {
 }
 
 export function useIsLoggedIn(route: string) {
-  const { token } = useTokens();
-  const navigate = useNavigate();
-  const sessionRedirect = sessionStorage.getItem("redirect");
+  // const { token } = useTokens();
+  // const router = useRouter(); // Use Next.js router
+  // const sessionRedirect = typeof window !== "undefined" ? sessionStorage.getItem("redirect") : null;
 
-  useEffect(() => {
-    if (token) {
-      navigate(sessionRedirect || route);
-    }
-  }, [token, navigate, route, sessionRedirect]);
+  // useEffect(() => {
+  //   if (token) {
+  //     router.push(sessionRedirect || route); // Use router.push instead of navigate
+  //   }
+  // }, [token, router, route, sessionRedirect]);
 }
 
 export const useScrollToTop = () => {
-  const location = useLocation();
+  // const router = useRouter(); // Use Next.js router
 
-  useEffect(() => {
-    // Ensure the scroll position resets
-    window.scrollTo({ top: 0, behavior: "smooth" });
-  }, [location.pathname]);
+  // useEffect(() => {
+  //   // Ensure the scroll position resets
+  //   window.scrollTo({ top: 0, behavior: "smooth" });
+  // }, [router.pathname]); // Use router.pathname instead of location.pathname
 };
 
 export const checkIfArraysAreEqual = (arr1: string[], arr2: string[]) => {
