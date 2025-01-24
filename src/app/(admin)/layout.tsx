@@ -153,16 +153,16 @@ export default function AdminLayout({
                     <Users className="mr-2" /> My Subscriptions
                   </Link>
                 </li>
+                <li>
+                  <Link
+                    href="/marketplace"
+                    className="flex items-center p-2 rounded-lg hover:bg-gradient-to-r hover:from-pink-500 hover:via-purple-500 hover:to-indigo-500 text-gray-300 hover:text-white transition-colors"
+                  >
+                    <Store className="mr-2" /> Marketplace
+                  </Link>
+                </li>
               </>
             )}
-            <li>
-              <Link
-                href="/marketplace"
-                className="flex items-center p-2 rounded-lg hover:bg-gradient-to-r hover:from-pink-500 hover:via-purple-500 hover:to-indigo-500 text-gray-300 hover:text-white transition-colors"
-              >
-                <Store className="mr-2" /> Marketplace
-              </Link>
-            </li>
           </ul>
         </nav>
         <div className="mt-auto">
@@ -183,7 +183,7 @@ export default function AdminLayout({
       </aside>
 
       {/* Main content */}
-      <div className="flex-1 flex flex-col min-h-screen w-full bg-gray-900">{children}</div>
+      <div className="flex-1 flex flex-col min-h-screen">{children}</div>
 
       {/* Overlay for mobile */}
       {isSidebarOpen && (
