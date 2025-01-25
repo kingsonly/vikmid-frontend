@@ -26,18 +26,20 @@ export function TransactionList({ productId }) {
                 <Table>
                     <TableHeader>
                         <TableRow>
-                            <TableHead>Date</TableHead>
-                            <TableHead>Customer</TableHead>
-                            <TableHead>Amount</TableHead>
-                            <TableHead>Status</TableHead>
+                            <TableHead className="text-blue-500">SN</TableHead>
+                            <TableHead className="text-yellow-500">Customer</TableHead>
+                            <TableHead className="text-purple-500">Amount</TableHead>
+                            <TableHead className="text-green-500">Date</TableHead>
+                            <TableHead className="text-pink-500">Status</TableHead>
                         </TableRow>
                     </TableHeader>
                     <TableBody>
-                        {transactions.map((transaction) => (
+                        {transactions.map((transaction, index) => (
                             <TableRow key={transaction.id}>
-                                <TableCell>{transaction.date}</TableCell>
-                                <TableCell>{transaction.customer}</TableCell>
-                                <TableCell>${transaction.amount.toFixed(2)}</TableCell>
+                                <TableCell className="text-blue-500">{index + 1}</TableCell>
+                                <TableCell className="text-yellow-500">{transaction.customer}</TableCell>
+                                <TableCell className="text-purple-500">${transaction.amount.toFixed(2)}</TableCell>
+                                <TableCell className="text-green-500">{transaction.date}</TableCell>
                                 <TableCell>
                                     <span className={`px-2 py-1 rounded-full text-xs ${transaction.status === 'Completed' ? 'bg-green-500' :
                                         transaction.status === 'Pending' ? 'bg-yellow-500' :
