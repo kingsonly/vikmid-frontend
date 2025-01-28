@@ -86,7 +86,7 @@ export default function CourseOverviewPage() {
                 <TabsList>
                   <TabsTrigger value="overview">Overview</TabsTrigger>
                   <TabsTrigger value="curriculum">Curriculum</TabsTrigger>
-                  <TabsTrigger value="instructor">Instructor</TabsTrigger>
+                 
                 </TabsList>
                 <TabsContent value="overview">
                   <p className="mb-4">{course.description}</p>
@@ -102,9 +102,6 @@ export default function CourseOverviewPage() {
                 <TabsContent value="curriculum">
                   <p>Course curriculum content goes here...</p>
                 </TabsContent>
-                <TabsContent value="instructor">
-                  <p>Instructor information goes here...</p>
-                </TabsContent>
               </Tabs>
             </CardContent>
           </Card>
@@ -119,25 +116,25 @@ export default function CourseOverviewPage() {
                 <Users className="w-5 h-5 mr-2" />
                 <span>{course.enrolledStudents} students enrolled</span>
               </div>
-              <div className="flex items-center">
+              {/* <div className="flex items-center">
                 <Clock className="w-5 h-5 mr-2" />
                 <span>{course.duration}</span>
-              </div>
+              </div> */}
               <div className="flex items-center">
                 <BookOpen className="w-5 h-5 mr-2" />
                 <span>{course.lessons} lessons</span>
               </div>
-              <div className="flex items-center">
+              {/* <div className="flex items-center">
                 <CheckCircle className="w-5 h-5 mr-2" />
                 <span>{course.level}</span>
               </div>
               <div className="flex items-center">
                 <Star className="w-5 h-5 mr-2" />
                 <span>{course.rating} out of 5 stars</span>
-              </div>
+              </div> */}
             </CardContent>
             <CardFooter className="flex flex-col items-center">
-              <div className="w-full mb-4">
+              {/* <div className="w-full mb-4">
                 <RadioGroup value={selectedPurchaseOption} onValueChange={setSelectedPurchaseOption}>
                   {purchaseOptions.map((option) => (
                     <div key={option.id} className="flex items-center space-x-2 mb-2">
@@ -149,7 +146,7 @@ export default function CourseOverviewPage() {
                     </div>
                   ))}
                 </RadioGroup>
-              </div>
+              </div> */}
               {course.discountedPrice && (
                 <p className="text-sm mb-2">
                   <span className="line-through text-gray-500 mr-2">${course.price.toFixed(2)}</span>
