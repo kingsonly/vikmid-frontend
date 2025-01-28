@@ -38,7 +38,7 @@ export const useApiCall = () => {
       successMessage = "Successful",
       showToast = true,
     }: ApiCallOptions,
-    router: any // Accept router as a parameter
+    router?: any // Accept router as a parameter
   ): Promise<any> => {
     const url = process.env.NEXT_PUBLIC_API_URL;
     const baseURL = `${url}`;
@@ -237,6 +237,10 @@ const handleApiError = (
 
       switch (status) {
         case 400:
+          if (!router) {
+            toast.error("Bad Request: Please check your submission.");
+            setToastShown(endpoint);
+          }
           if (!errorStates.find((e) => e.endpoint === endpoint)?.toastShown) {
             toast.error("Bad Request: Please check your submission.");
             setToastShown(endpoint);
@@ -244,6 +248,12 @@ const handleApiError = (
           setErrorState(true);
           break;
         case 401:
+          if (!router) {
+            toast.error("Unauthorized: Please log in again.");
+            setToastShown(endpoint);
+            Cookies.remove("userData");
+
+          }
           if (router.pathname !== "/login") {
             if (!errorStates.find((e) => e.endpoint === endpoint)?.toastShown) {
               toast.error("Unauthorized: Please log in again.");
@@ -255,6 +265,15 @@ const handleApiError = (
           setErrorState(true);
           break;
         case 403:
+          if (!router) {
+            toast.error(
+              "Forbidden: You don't have permission to perform this action."
+            );
+            setToastShown(endpoint);
+            Cookies.remove("userData");
+
+
+          }
           if (!errorStates.find((e) => e.endpoint === endpoint)?.toastShown) {
             toast.error(
               "Forbidden: You don't have permission to perform this action."

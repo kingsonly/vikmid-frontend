@@ -10,7 +10,6 @@ const useTokens = () => {
     return {
       token: parsedData?.token,
       createdAt: parsedData?.createdAt,
-      deletedAt: parsedData?.deletedAt,
       email: parsedData?.email,
     };
   } catch (error) {
