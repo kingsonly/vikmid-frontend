@@ -59,7 +59,7 @@ export default function AdminLayout({
         <nav className="flex-1">
           <ul className="space-y-2">
             <li><Link href="/dashboard" className="flex items-center p-2 hover:text-indigo-400 transition-colors"><LinkIcon className="mr-2" /> Dashboard</Link></li>
-            {usersDetails.isCreator && usersDetails.activeHub > 0 ? (
+            {usersDetails.isCreator && usersDetails.activeHub ? (
               <>
 
                 <li><Link href="/link-in-bio" className="flex items-center p-2 hover:text-indigo-400 transition-colors"><LinkIcon className="mr-2" /> Link in Bio</Link></li>
