@@ -1,155 +1,87 @@
+"use client"
 
-'use client'
+import React from 'react'
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Bar, BarChart, ResponsiveContainer, XAxis, YAxis } from "recharts"
+import { DollarSign, Users, ShoppingCart, Activity } from 'lucide-react'
 
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { Switch } from "@/components/ui/switch"
-import { Label } from "@/components/ui/label"
-import { Input } from "@/components/ui/input"
-import { Textarea } from "@/components/ui/textarea"
-//import { MessageSquare, BookOpen, ShoppingBag, Calendar, CreditCard, Mail, LinkIcon, Users, Settings, Menu, X } from 'lucide-react'
+const data = [
+    { name: "Jan", total: Math.floor(Math.random() * 5000) },
+    { name: "Feb", total: Math.floor(Math.random() * 5000) },
+    { name: "Mar", total: Math.floor(Math.random() * 5000) },
+    { name: "Apr", total: Math.floor(Math.random() * 5000) },
+    { name: "May", total: Math.floor(Math.random() * 5000) },
+    { name: "Jun", total: Math.floor(Math.random() * 5000) },
+]
 
 export default function CreatorDashboard() {
     return (
-        <Tabs defaultValue="overview" className="space-y-4">
-            <TabsList className="bg-gray-800/80 backdrop-blur-xl p-1 rounded-lg border border-gray-700">
-                <TabsTrigger
-                    value="overview"
-                    className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-pink-500 data-[state=active]:via-purple-500 data-[state=active]:to-indigo-500 data-[state=active]:text-white rounded-md transition-colors"
-                >
-                    Overview
-                </TabsTrigger>
-                <TabsTrigger
-                    value="content"
-                    className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-pink-500 data-[state=active]:via-purple-500 data-[state=active]:to-indigo-500 data-[state=active]:text-white rounded-md transition-colors"
-                >
-                    Content
-                </TabsTrigger>
-                <TabsTrigger
-                    value="analytics"
-                    className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-pink-500 data-[state=active]:via-purple-500 data-[state=active]:to-indigo-500 data-[state=active]:text-white rounded-md transition-colors"
-                >
-                    Analytics
-                </TabsTrigger>
-            </TabsList>
-
-            <TabsContent value="overview" className="space-y-4">
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                    <Card className="bg-gray-800/50 backdrop-blur-xl border-gray-700 hover:border-purple-500/50 transition-colors">
-                        <CardHeader>
-                            <CardTitle className="bg-clip-text text-transparent bg-gradient-to-r from-pink-500 via-purple-500 to-indigo-500">Total Subscribers</CardTitle>
-                        </CardHeader>
-                        <CardContent>
-                            <p className="text-4xl font-bold text-white">1,234</p>
-                        </CardContent>
-                    </Card>
-                    <Card className="bg-gray-800/50 backdrop-blur-xl border-gray-700 hover:border-purple-500/50 transition-colors">
-                        <CardHeader>
-                            <CardTitle className="bg-clip-text text-transparent bg-gradient-to-r from-pink-500 via-purple-500 to-indigo-500">Total Revenue</CardTitle>
-                        </CardHeader>
-                        <CardContent>
-                            <p className="text-4xl font-bold text-white">₦2,345,678</p>
-                        </CardContent>
-                    </Card>
-                    <Card className="bg-gray-800/50 backdrop-blur-xl border-gray-700 hover:border-purple-500/50 transition-colors">
-                        <CardHeader>
-                            <CardTitle className="bg-clip-text text-transparent bg-gradient-to-r from-pink-500 via-purple-500 to-indigo-500">Active Courses</CardTitle>
-                        </CardHeader>
-                        <CardContent>
-                            <p className="text-4xl font-bold text-white">5</p>
-                        </CardContent>
-                    </Card>
-                </div>
-                <Card className="bg-gray-800/50 backdrop-blur-xl border-gray-700 hover:border-purple-500/50 transition-colors">
-                    <CardHeader>
-                        <CardTitle className="bg-clip-text text-transparent bg-gradient-to-r from-pink-500 via-purple-500 to-indigo-500">Recent Activity</CardTitle>
+        <div className="space-y-6 bg-gray-900 text-white p-6 rounded-lg">
+            <h1 className="text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-pink-500 to-purple-500">
+                Creator Dashboard
+            </h1>
+            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+                <Card className="bg-gray-800 border-gray-700">
+                    <CardHeader className="flex flex-row items-center justify-between pb-2">
+                        <CardTitle className="text-sm font-medium text-gray-200">Total Revenue</CardTitle>
+                        <DollarSign className="w-4 h-4 text-green-400" />
                     </CardHeader>
                     <CardContent>
-                        <ul className="space-y-2 text-gray-300">
-                            <li className="p-2 rounded-lg hover:bg-gray-700 transition-colors">New subscriber: John Doe</li>
-                            <li className="p-2 rounded-lg hover:bg-gray-700 transition-colors">Course purchase: "Advanced Web Development"</li>
-                            <li className="p-2 rounded-lg hover:bg-gray-700 transition-colors">New booking: Consultation call with Jane Smith</li>
-                        </ul>
+                        <div className="text-2xl font-bold text-green-400">$45,231.89</div>
+                        <p className="text-xs text-gray-400">+20.1% from last month</p>
                     </CardContent>
                 </Card>
-            </TabsContent>
-
-            <TabsContent value="content" className="space-y-4">
-                <Card className="bg-gray-800/50 backdrop-blur-xl border-gray-700 hover:border-purple-500/50 transition-colors">
-                    <CardHeader>
-                        <CardTitle className="bg-clip-text text-transparent bg-gradient-to-r from-pink-500 via-purple-500 to-indigo-500">Create New Content</CardTitle>
+                <Card className="bg-gray-800 border-gray-700">
+                    <CardHeader className="flex flex-row items-center justify-between pb-2">
+                        <CardTitle className="text-sm font-medium text-gray-200">Subscribers</CardTitle>
+                        <Users className="w-4 h-4 text-blue-400" />
                     </CardHeader>
                     <CardContent>
-                        <form className="space-y-4">
-                            <div>
-                                <Label htmlFor="content-type" className="text-gray-300">Content Type</Label>
-                                <select id="content-type" className="w-full mt-1 bg-gray-700 border border-gray-600 rounded-lg text-white focus:border-purple-500 transition-colors">
-                                    <option>Course</option>
-                                    <option>Digital Product</option>
-                                    <option>Blog Post</option>
-                                </select>
-                            </div>
-                            <div>
-                                <Label htmlFor="content-title" className="text-gray-300">Title</Label>
-                                <Input
-                                    id="content-title"
-                                    placeholder="Enter title"
-                                    className="bg-gray-700 border-gray-600 text-white focus:border-purple-500 transition-colors"
-                                />
-                            </div>
-                            <div>
-                                <Label htmlFor="content-description" className="text-gray-300">Description</Label>
-                                <Textarea
-                                    id="content-description"
-                                    placeholder="Enter description"
-                                    className="bg-gray-700 border-gray-600 text-white focus:border-purple-500 transition-colors"
-                                />
-                            </div>
-                            <Button className="bg-gradient-to-r from-pink-500 via-purple-500 to-indigo-500 text-white hover:opacity-90 transition-opacity">
-                                Create Content
-                            </Button>
-                        </form>
+                        <div className="text-2xl font-bold text-blue-400">2,350</div>
+                        <p className="text-xs text-gray-400">+180.1% from last month</p>
                     </CardContent>
                 </Card>
-                <Card className="bg-gray-800/50 backdrop-blur-xl border-gray-700 hover:border-purple-500/50 transition-colors">
-                    <CardHeader>
-                        <CardTitle className="bg-clip-text text-transparent bg-gradient-to-r from-pink-500 via-purple-500 to-indigo-500">Your Content</CardTitle>
+                <Card className="bg-gray-800 border-gray-700">
+                    <CardHeader className="flex flex-row items-center justify-between pb-2">
+                        <CardTitle className="text-sm font-medium text-gray-200">Course Sales</CardTitle>
+                        <ShoppingCart className="w-4 h-4 text-purple-400" />
                     </CardHeader>
                     <CardContent>
-                        <ul className="space-y-2 text-gray-300">
-                            <li className="p-2 rounded-lg hover:bg-gray-700 transition-colors">Advanced Web Development (Course)</li>
-                            <li className="p-2 rounded-lg hover:bg-gray-700 transition-colors">E-book: Mastering React (Digital Product)</li>
-                            <li className="p-2 rounded-lg hover:bg-gray-700 transition-colors">10 Tips for Successful Freelancing (Blog Post)</li>
-                        </ul>
+                        <div className="text-2xl font-bold text-purple-400">12,234</div>
+                        <p className="text-xs text-gray-400">+19% from last month</p>
                     </CardContent>
                 </Card>
-            </TabsContent>
-
-            <TabsContent value="analytics" className="space-y-4">
-                <Card className="bg-gray-800/50 backdrop-blur-xl border-gray-700 hover:border-purple-500/50 transition-colors">
-                    <CardHeader>
-                        <CardTitle className="bg-clip-text text-transparent bg-gradient-to-r from-pink-500 via-purple-500 to-indigo-500">Revenue Breakdown</CardTitle>
+                <Card className="bg-gray-800 border-gray-700">
+                    <CardHeader className="flex flex-row items-center justify-between pb-2">
+                        <CardTitle className="text-sm font-medium text-gray-200">Active Users</CardTitle>
+                        <Activity className="w-4 h-4 text-yellow-400" />
                     </CardHeader>
                     <CardContent>
-                        <div className="h-[200px] bg-gray-700 rounded-lg flex items-center justify-center text-gray-400">
-                            [Revenue Chart Placeholder]
-                        </div>
+                        <div className="text-2xl font-bold text-yellow-400">573</div>
+                        <p className="text-xs text-gray-400">+201 since last hour</p>
                     </CardContent>
                 </Card>
-                <Card className="bg-gray-800/50 backdrop-blur-xl border-gray-700 hover:border-purple-500/50 transition-colors">
-                    <CardHeader>
-                        <CardTitle className="bg-clip-text text-transparent bg-gradient-to-r from-pink-500 via-purple-500 to-indigo-500">Top Performing Content</CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                        <ul className="space-y-2 text-gray-300">
-                            <li className="p-2 rounded-lg hover:bg-gray-700 transition-colors">1. Advanced Web Development (Course) - ₦500,000</li>
-                            <li className="p-2 rounded-lg hover:bg-gray-700 transition-colors">2. E-book: Mastering React (Digital Product) - ₦250,000</li>
-                            <li className="p-2 rounded-lg hover:bg-gray-700 transition-colors">3. One-on-One Consultation (Booking) - ₦100,000</li>
-                        </ul>
-                    </CardContent>
-                </Card>
-            </TabsContent>
-        </Tabs>
+            </div>
+            <Card className="bg-gray-800 border-gray-700">
+                <CardHeader>
+                    <CardTitle className="text-gray-200">Revenue Overview</CardTitle>
+                </CardHeader>
+                <CardContent>
+                    <ResponsiveContainer width="100%" height={350}>
+                        <BarChart data={data}>
+                            <XAxis dataKey="name" stroke="#888888" fontSize={12} tickLine={false} axisLine={false} />
+                            <YAxis stroke="#888888" fontSize={12} tickLine={false} axisLine={false} tickFormatter={(value) => `$${value}`} />
+                            <Bar dataKey="total" fill="url(#colorGradient)" radius={[4, 4, 0, 0]} />
+                            <defs>
+                                <linearGradient id="colorGradient" x1="0" y1="0" x2="0" y2="1">
+                                    <stop offset="0%" stopColor="#ec4899" />
+                                    <stop offset="100%" stopColor="#8b5cf6" />
+                                </linearGradient>
+                            </defs>
+                        </BarChart>
+                    </ResponsiveContainer>
+                </CardContent>
+            </Card>
+        </div>
     )
 }
