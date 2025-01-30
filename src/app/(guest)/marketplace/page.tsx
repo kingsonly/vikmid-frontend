@@ -1,12 +1,12 @@
 "use client"
 
 import { useState } from "react"
+import Link from "next/link"
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Search, BookOpen, Users } from "lucide-react"
-import Link from "next/link"
 
 interface Course {
   id: string
@@ -49,23 +49,20 @@ const mockCourses: Course[] = [
   // Add more mock courses as needed
 ]
 
-export default function MarketplacePage() {
+export default function CoursesPage() {
   const [searchTerm, setSearchTerm] = useState("")
 
   const filteredCourses = mockCourses.filter((course) => course.title.toLowerCase().includes(searchTerm.toLowerCase()))
 
   return (
-    <div className="container mx-auto py-8">
-      <h1 className="text-3xl font-bold mb-8 text-center bg-clip-text text-transparent bg-gradient-to-r from-pink-500 via-purple-500 to-indigo-500">
-        Course Marketplace
-      </h1>
-      <div className="mb-6 relative">
+    <div className="space-y-6">
+      <div className="relative">
         <Input
           type="text"
           placeholder="Search courses..."
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
-          className="pl-10"
+          className="pl-10 text-black"
         />
         <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
       </div>
@@ -88,10 +85,7 @@ export default function MarketplacePage() {
               <p className="font-bold">${course.price.toFixed(2)}</p>
             </CardFooter>
             <CardFooter>
-              <Button
-                asChild
-                className="w-full bg-gradient-to-r from-pink-500 via-purple-500 to-indigo-500 hover:from-pink-600 hover:via-purple-600 hover:to-indigo-600"
-              >
+              <Button asChild className="w-full bg-blue-600 hover:bg-blue-700">
                 <Link href={`/marketplace/${course.id}`}>
                   <BookOpen className="w-4 h-4 mr-2" />
                   View Course

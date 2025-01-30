@@ -1,29 +1,27 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import { useParams } from "next/navigation"
-import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
-import { Badge } from "@/components/ui/badge"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { Users, Clock, BookOpen, CheckCircle, Star } from "lucide-react"
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
-import { Label } from "@/components/ui/label"
+import { useState } from "react";
+import { useRouter, useParams } from "next/navigation";
+import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Users, BookOpen, ChevronLeft } from "lucide-react";
 
 interface Course {
-  id: string
-  title: string
-  description: string
-  instructor: string
-  price: number
-  discountedPrice?: number
-  enrolledStudents: number
-  category: string
-  duration: string
-  lessons: number
-  level: string
-  rating: number
-  whatYouWillLearn: string[]
+  id: string;
+  title: string;
+  description: string;
+  instructor: string;
+  price: number;
+  discountedPrice?: number;
+  enrolledStudents: number;
+  category: string;
+  duration: string;
+  lessons: number;
+  level: string;
+  rating: number;
+  whatYouWillLearn: string[];
 }
 
 const mockCourses: Course[] = [
@@ -49,31 +47,36 @@ const mockCourses: Course[] = [
       "Implement routing in React applications",
     ],
   },
-  // Add more mock courses as needed
-]
+];
 
 export default function CourseOverviewPage() {
-  const params = useParams()
-  const courseId = params.courseId as string
-  const course = mockCourses.find((c) => c.id === courseId)
+  const router = useRouter();
+  const params = useParams();
+  const courseId = params.courseId as string;
+  const course = mockCourses.find((c) => c.id === courseId);
 
-  const [selectedTab, setSelectedTab] = useState("overview")
-  const [selectedPurchaseOption, setSelectedPurchaseOption] = useState("full")
+  const [selectedTab, setSelectedTab] = useState("overview");
 
   if (!course) {
-    return <div>Course not found</div>
+    return <div>Course not found</div>;
   }
-
-  const purchaseOptions = [
-    { id: "full", label: "Full Course", price: course.discountedPrice || course.price },
-    { id: "installments", label: "3 Monthly Installments", price: (course.discountedPrice || course.price) / 3 },
-  ]
 
   return (
     <div className="container mx-auto py-8">
+      {/* Back Button */}
+      <button
+        onClick={() => router.back()}
+        className="flex items-center gap-2 text-gray-700 hover:text-gray-900 mb-6"
+      >
+        <ChevronLeft className="w-5 h-5" />
+        <span className="font-medium">Back to Marketplace</span>
+      </button>
+
+      {/* Course Title */}
       <h1 className="text-3xl font-bold mb-8 text-center bg-clip-text text-transparent bg-gradient-to-r from-pink-500 via-purple-500 to-indigo-500">
         {course.title}
       </h1>
+
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         <div className="md:col-span-2">
           <Card>
@@ -86,7 +89,6 @@ export default function CourseOverviewPage() {
                 <TabsList>
                   <TabsTrigger value="overview">Overview</TabsTrigger>
                   <TabsTrigger value="curriculum">Curriculum</TabsTrigger>
-                 
                 </TabsList>
                 <TabsContent value="overview">
                   <p className="mb-4">{course.description}</p>
@@ -106,6 +108,7 @@ export default function CourseOverviewPage() {
             </CardContent>
           </Card>
         </div>
+
         <div>
           <Card>
             <CardHeader>
@@ -116,37 +119,12 @@ export default function CourseOverviewPage() {
                 <Users className="w-5 h-5 mr-2" />
                 <span>{course.enrolledStudents} students enrolled</span>
               </div>
-              {/* <div className="flex items-center">
-                <Clock className="w-5 h-5 mr-2" />
-                <span>{course.duration}</span>
-              </div> */}
               <div className="flex items-center">
                 <BookOpen className="w-5 h-5 mr-2" />
                 <span>{course.lessons} lessons</span>
               </div>
-              {/* <div className="flex items-center">
-                <CheckCircle className="w-5 h-5 mr-2" />
-                <span>{course.level}</span>
-              </div>
-              <div className="flex items-center">
-                <Star className="w-5 h-5 mr-2" />
-                <span>{course.rating} out of 5 stars</span>
-              </div> */}
             </CardContent>
             <CardFooter className="flex flex-col items-center">
-              {/* <div className="w-full mb-4">
-                <RadioGroup value={selectedPurchaseOption} onValueChange={setSelectedPurchaseOption}>
-                  {purchaseOptions.map((option) => (
-                    <div key={option.id} className="flex items-center space-x-2 mb-2">
-                      <RadioGroupItem value={option.id} id={option.id} />
-                      <Label htmlFor={option.id} className="flex justify-between w-full">
-                        <span>{option.label}</span>
-                        <span>${option.price.toFixed(2)}</span>
-                      </Label>
-                    </div>
-                  ))}
-                </RadioGroup>
-              </div> */}
               {course.discountedPrice && (
                 <p className="text-sm mb-2">
                   <span className="line-through text-gray-500 mr-2">${course.price.toFixed(2)}</span>
@@ -156,13 +134,12 @@ export default function CourseOverviewPage() {
                 </p>
               )}
               <Button className="w-full bg-gradient-to-r from-pink-500 via-purple-500 to-indigo-500 hover:from-pink-600 hover:via-purple-600 hover:to-indigo-600">
-                {selectedPurchaseOption === "full" ? "Enroll Now" : "Start Installment Plan"}
+                Enroll Now
               </Button>
             </CardFooter>
           </Card>
         </div>
       </div>
     </div>
-  )
+  );
 }
-
