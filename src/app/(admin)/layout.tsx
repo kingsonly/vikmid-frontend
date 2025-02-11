@@ -2,7 +2,7 @@
 import type { Metadata } from "next";
 import localFont from "next/font/local";
 import "../globals.css";
-import { useState } from 'react'
+import { useMemo, useState } from 'react'
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
@@ -33,6 +33,35 @@ export default function AdminLayout({
   const toggleSidebar = () => {
     setIsSidebarOpen(!isSidebarOpen)
   }
+
+  const sidebarContent = useMemo(() => {
+    return <ul className="space-y-2">
+      <li><Link href="/dashboard" className="flex items-center p-2 hover:text-indigo-400 transition-colors"><LinkIcon className="mr-2" /> Dashboard</Link></li>
+      {usersDetails.isCreator && usersDetails.activeHub ? (
+        <>
+
+          <li><Link href="/link-in-bio" className="flex items-center p-2 hover:text-indigo-400 transition-colors"><LinkIcon className="mr-2" /> Link in Bio</Link></li>
+          <li><Link href="/course" className="flex items-center p-2 rounded-lg hover:bg-gradient-to-r hover:from-pink-500 hover:via-purple-500 hover:to-indigo-500 text-gray-300 hover:text-white transition-colors"><BookOpen className="mr-2" /> Courses</Link></li>
+          <li><Link href="/store" className="flex items-center p-2 rounded-lg hover:bg-gradient-to-r hover:from-pink-500 hover:via-purple-500 hover:to-indigo-500 text-gray-300 hover:text-white transition-colors"><ShoppingBag className="mr-2" /> Store</Link></li>
+          <li><Link href="/booking" className="flex items-center p-2 rounded-lg hover:bg-gradient-to-r hover:from-pink-500 hover:via-purple-500 hover:to-indigo-500 text-gray-300 hover:text-white transition-colors"><Calendar className="mr-2" /> Bookings</Link></li>
+          <li><Link href="/contest" className="flex items-center p-2 rounded-lg hover:bg-gradient-to-r hover:from-pink-500 hover:via-purple-500 hover:to-indigo-500 text-gray-300 hover:text-white transition-colors"><Calendar className="mr-2" /> Contest</Link></li>
+          <li><Link href="/subscription" className="flex items-center p-2 rounded-lg hover:bg-gradient-to-r hover:from-pink-500 hover:via-purple-500 hover:to-indigo-500 text-gray-300 hover:text-white transition-colors"><CreditCard className="mr-2" /> Subscriptions</Link></li>
+          <li><Link href="#" className="flex items-center p-2 rounded-lg hover:bg-gradient-to-r hover:from-pink-500 hover:via-purple-500 hover:to-indigo-500 text-gray-300 hover:text-white transition-colors"><Mail className="mr-2" /> Email & SMS</Link></li>
+        </>
+      ) : !usersDetails.isCreator ? (
+
+        <>
+
+          <li><Link href="#" className="flex items-center p-2 rounded-lg hover:bg-gradient-to-r hover:from-pink-500 hover:via-purple-500 hover:to-indigo-500 text-gray-300 hover:text-white transition-colors"><BookOpen className="mr-2" /> My Courses</Link></li>
+          <li><Link href="#" className="flex items-center p-2 rounded-lg hover:bg-gradient-to-r hover:from-pink-500 hover:via-purple-500 hover:to-indigo-500 text-gray-300 hover:text-white transition-colors"><ShoppingBag className="mr-2" /> My Purchases</Link></li>
+          <li><Link href="#" className="flex items-center p-2 rounded-lg hover:bg-gradient-to-r hover:from-pink-500 hover:via-purple-500 hover:to-indigo-500 text-gray-300 hover:text-white transition-colors"><Calendar className="mr-2" /> My Bookings</Link></li>
+          <li><Link href="/my-subscription" className="flex items-center p-2 rounded-lg hover:bg-gradient-to-r hover:from-pink-500 hover:via-purple-500 hover:to-indigo-500 text-gray-300 hover:text-white transition-colors"><Users className="mr-2" /> My Subscriptions</Link></li>
+
+        </>
+      ) : null
+      }
+    </ul>
+  }, [usersDetails.isCreator, usersDetails.activeHub]);
   return (
 
     <div className="flex h-screen bg-gray-900 text-gray-100">
@@ -57,18 +86,19 @@ export default function AdminLayout({
           <span className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-pink-500 via-purple-500 to-indigo-500">VIKMID</span>
         </div>
         <nav className="flex-1">
-          <ul className="space-y-2">
+          {sidebarContent}
+          {/* <ul className="space-y-2">
             <li><Link href="/dashboard" className="flex items-center p-2 hover:text-indigo-400 transition-colors"><LinkIcon className="mr-2" /> Dashboard</Link></li>
             {usersDetails.isCreator && usersDetails.activeHub ? (
               <>
 
-                <li><Link href="/link-in-bio" className="flex items-center p-2 hover:text-indigo-400 transition-colors"><LinkIcon className="mr-2" /> Link in Bio</Link></li>
-                <li><Link href="/course" className="flex items-center p-2 rounded-lg hover:bg-gradient-to-r hover:from-pink-500 hover:via-purple-500 hover:to-indigo-500 text-gray-300 hover:text-white transition-colors"><BookOpen className="mr-2" /> Courses</Link></li>
-                <li><Link href="/store" className="flex items-center p-2 rounded-lg hover:bg-gradient-to-r hover:from-pink-500 hover:via-purple-500 hover:to-indigo-500 text-gray-300 hover:text-white transition-colors"><ShoppingBag className="mr-2" /> Store</Link></li>
-                <li><Link href="/booking" className="flex items-center p-2 rounded-lg hover:bg-gradient-to-r hover:from-pink-500 hover:via-purple-500 hover:to-indigo-500 text-gray-300 hover:text-white transition-colors"><Calendar className="mr-2" /> Bookings</Link></li>
-                <li><Link href="/contest" className="flex items-center p-2 rounded-lg hover:bg-gradient-to-r hover:from-pink-500 hover:via-purple-500 hover:to-indigo-500 text-gray-300 hover:text-white transition-colors"><Calendar className="mr-2" /> Contest</Link></li>
-                <li><Link href="/subscription" className="flex items-center p-2 rounded-lg hover:bg-gradient-to-r hover:from-pink-500 hover:via-purple-500 hover:to-indigo-500 text-gray-300 hover:text-white transition-colors"><CreditCard className="mr-2" /> Subscriptions</Link></li>
-                <li><Link href="#" className="flex items-center p-2 rounded-lg hover:bg-gradient-to-r hover:from-pink-500 hover:via-purple-500 hover:to-indigo-500 text-gray-300 hover:text-white transition-colors"><Mail className="mr-2" /> Email & SMS</Link></li>
+                <li><Link prefetch={false} href="/link-in-bio" className="flex items-center p-2 hover:text-indigo-400 transition-colors"><LinkIcon className="mr-2" /> Link in Bio</Link></li>
+                <li><Link prefetch={false} href="/course" className="flex items-center p-2 rounded-lg hover:bg-gradient-to-r hover:from-pink-500 hover:via-purple-500 hover:to-indigo-500 text-gray-300 hover:text-white transition-colors"><BookOpen className="mr-2" /> Courses</Link></li>
+                <li><Link prefetch={false} href="/store" className="flex items-center p-2 rounded-lg hover:bg-gradient-to-r hover:from-pink-500 hover:via-purple-500 hover:to-indigo-500 text-gray-300 hover:text-white transition-colors"><ShoppingBag className="mr-2" /> Store</Link></li>
+                <li><Link prefetch={false} href="/booking" className="flex items-center p-2 rounded-lg hover:bg-gradient-to-r hover:from-pink-500 hover:via-purple-500 hover:to-indigo-500 text-gray-300 hover:text-white transition-colors"><Calendar className="mr-2" /> Bookings</Link></li>
+                <li><Link prefetch={false} href="/contest" className="flex items-center p-2 rounded-lg hover:bg-gradient-to-r hover:from-pink-500 hover:via-purple-500 hover:to-indigo-500 text-gray-300 hover:text-white transition-colors"><Calendar className="mr-2" /> Contest</Link></li>
+                <li><Link prefetch={false} href="/subscription" className="flex items-center p-2 rounded-lg hover:bg-gradient-to-r hover:from-pink-500 hover:via-purple-500 hover:to-indigo-500 text-gray-300 hover:text-white transition-colors"><CreditCard className="mr-2" /> Subscriptions</Link></li>
+                <li><Link prefetch={false} href="#" className="flex items-center p-2 rounded-lg hover:bg-gradient-to-r hover:from-pink-500 hover:via-purple-500 hover:to-indigo-500 text-gray-300 hover:text-white transition-colors"><Mail className="mr-2" /> Email & SMS</Link></li>
               </>
             ) : !usersDetails.isCreator ? (
 
@@ -82,7 +112,7 @@ export default function AdminLayout({
               </>
             ) : null
             }
-          </ul>
+          </ul> */}
         </nav>
         <div className="mt-auto">
           <div className="flex items-center justify-between mb-4">

@@ -1,11 +1,13 @@
+"use client"
 import Link from "next/link"
 import Image from "next/image"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { LinkIcon, BookOpen, ShoppingBag, Calendar, CreditCard, Mail, MessageSquare } from 'lucide-react'
 import LinkInBio from "@/components/link-in-bio/LinkInBio"
+import withAuth from "@/utils/withAuth"
 
-export default function LinkInBioPage() {
+function LinkInBioPage() {
 
 
   return (
@@ -15,3 +17,4 @@ export default function LinkInBioPage() {
     </main>
   );
 }
+export default withAuth(LinkInBioPage, true);

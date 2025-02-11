@@ -16,6 +16,7 @@ import Cookies from "js-cookie";
 import { useForm, SubmitHandler } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
+import { LoadingSpinner } from '@/components/loader/Loader';
 
 interface SignupFormInputs {
   email: string;
@@ -62,6 +63,7 @@ export default function Signup() {
     resolver: yupResolver(schema),
   });
   const handleSignup: SubmitHandler<SignupFormInputs> = async (data) => {
+    setLoader(true)
     try {
       data["plan"] = plan;
 
@@ -79,10 +81,12 @@ export default function Signup() {
       });
       const { token, ...responseData } = userData;
       dispatch(saveDetails(responseData))
+      setLoader(false)
       router.push("/dashboard")
 
     } catch (error: any) {
       console.log(error);
+      setLoader(false)
     }
 
 
@@ -176,9 +180,11 @@ export default function Signup() {
             </div>
 
             <div className="space-y-2 mt-4">
-              <Button type='submit' className="w-full bg-gradient-to-r from-indigo-500 to-purple-700 text-white hover:from-indigo-600 hover:to-purple-800 transition-all duration-300">
-                Sign Up
-              </Button>
+              {loader ? <LoadingSpinner /> :
+                <Button type='submit' className="w-full bg-gradient-to-r from-indigo-500 to-purple-700 text-white hover:from-indigo-600 hover:to-purple-800 transition-all duration-300">
+                  Sign Up
+                </Button>
+              }
             </div>
 
           </form>

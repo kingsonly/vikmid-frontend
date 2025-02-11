@@ -1,3 +1,4 @@
+'use client';
 import useTokens from "../hooks/useTokens";
 import axios, { AxiosRequestConfig, AxiosError } from "axios";
 import useSWR from "swr";
@@ -5,7 +6,7 @@ import { toast } from "react-toastify";
 import Cookies from "js-cookie";
 import { useState } from "react";
 import { NextRouter } from "next/router";
-
+import { useRouter } from 'next/navigation';
 // Create an axios instance
 const baseURL = process.env.NEXT_PUBLIC_API_URL;
 const apiClient = axios.create({
@@ -27,7 +28,7 @@ export const useApiCall = () => {
   const { token } = useTokens();
   const [isNetworkError, setIsNetworkError] = useState(false);
   const { errorStates, updateErrorState, setToastShown } = useEndpointErrors();
-
+  const mainRouter = useRouter();
   const apiCall = async (
     {
       endpoint,
@@ -63,9 +64,10 @@ export const useApiCall = () => {
       updateErrorState(endpoint, false, true);
       return response;
     } catch (error: any) {
+
       handleApiError(
         error,
-        router, // Pass router here
+        mainRouter, // Pass router here
         setIsNetworkError,
         endpoint,
         errorStates,
@@ -211,7 +213,7 @@ const useEndpointErrors = () => {
 // Error handler to process different error cases
 const handleApiError = (
   error: AxiosError | Error,
-  router: NextRouter,
+  router: any,
   setIsNetworkError: (value: boolean) => void,
   endpoint: string,
   errorStates: Array<{
@@ -232,6 +234,7 @@ const handleApiError = (
   };
 
   if (axios.isAxiosError(error)) {
+
     if (error.response) {
       const status = error.response.status;
 
@@ -248,6 +251,7 @@ const handleApiError = (
           setErrorState(true);
           break;
         case 401:
+          console.log("checking error yes ", error);
           if (!router) {
             toast.error("Unauthorized: Please log in again.");
             setToastShown(endpoint);

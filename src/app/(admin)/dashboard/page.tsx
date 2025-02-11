@@ -10,10 +10,12 @@ import HubSelector from "@/components/dashboard/HubSelector"
 import PlanConfirmation from "@/components/dashboard/PlanConfirmation"
 import { useSelector, useDispatch } from 'react-redux';
 import { RootState, AppDispatch } from '../../../store';
-export default function Home() {
+import withAuth from "@/utils/withAuth"
+function Dashboard() {
   const usersDetails = useSelector((state: RootState) => state.userDetails);
   const RenderDashboards = () => {
-    if (!usersDetails.isActive) {
+
+    if (!usersDetails.isActive && usersDetails.isCreator) {
       return (<PlanConfirmation />)
     }
     if (usersDetails.isCreator && !usersDetails.activeHub) {
@@ -35,3 +37,4 @@ export default function Home() {
     </main>
   );
 }
+export default withAuth(Dashboard);
