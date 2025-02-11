@@ -14,6 +14,7 @@ import { useRouter } from 'next/navigation';
 //import { useRouter } from 'next/router';
 import { ToastContainer } from "react-toastify"
 import { GoogleAnalytics } from "nextjs-google-analytics";
+import { LoadingSpinner } from "@/components/loader/Loader"
 
 
 const AnimatedText = ({ words }: { words: string[] }) => {
@@ -142,6 +143,7 @@ export default function Home() {
       setLoader(false)
       setIsDialogOpen(false)
     }
+    setLoader(false)
 
 
   }
@@ -200,10 +202,15 @@ export default function Home() {
                         />
                       </div>
                     </div>
-                    <DialogFooter>
-                      <Button type="submit" className="bg-gradient-to-r from-pink-500 via-purple-500 to-indigo-500 text-white hover:from-pink-600 hover:via-purple-600 hover:to-indigo-600">
-                        Join Waitlist
-                      </Button>
+                    <DialogFooter >
+                      <div className="flex justify-center w-full ">
+                        {loader ? <LoadingSpinner /> :
+                          <Button type="submit" className="w-full bg-gradient-to-r from-pink-500 via-purple-500 to-indigo-500 text-white hover:from-pink-600 hover:via-purple-600 hover:to-indigo-600">
+                            Join Waitlist
+                          </Button>
+                        }
+                      </div>
+
                     </DialogFooter>
                   </form>
                 </DialogContent>

@@ -15,6 +15,7 @@ import Cookies from "js-cookie";
 import { AppDispatch } from '@/store';
 import { useDispatch } from 'react-redux';
 import { useEffect, useState } from 'react';
+import { LoadingSpinner } from "@/components/loader/Loader";
 
 interface LoginFormInputs {
   email: string;
@@ -37,6 +38,7 @@ export default function Login() {
     resolver: yupResolver(schema),
   });
   const handleLogin: SubmitHandler<LoginFormInputs> = async (data) => {
+    setLoader(true)
     try {
       const response = await apiCall({
         endpoint: "/auth/login",
@@ -52,10 +54,12 @@ export default function Login() {
       });
       const { token, ...responseData } = userData;
       dispatch(saveDetails(responseData))
+      setLoader(false)
       router.push("/dashboard")
 
     } catch (error: any) {
       console.log(error);
+      setLoader(false)
     }
 
 
@@ -97,9 +101,11 @@ export default function Login() {
             </div>
 
             <div className="space-y-2 mt-4">
-              <Button type='submit' className="w-full bg-gradient-to-r from-indigo-500 to-purple-700 text-white hover:from-indigo-600 hover:to-purple-800 transition-all duration-300">
-                Log In
-              </Button>
+              {loader ? <LoadingSpinner /> :
+                <Button type='submit' className="w-full bg-gradient-to-r from-indigo-500 to-purple-700 text-white hover:from-indigo-600 hover:to-purple-800 transition-all duration-300">
+                  Log In
+                </Button>
+              }
             </div>
           </form>
         </CardContent>

@@ -189,7 +189,7 @@ export default function LinkInBio() {
                             src={profileImage.url}
                             alt="Profile"
                             fill
-                            className="object-cover"
+
                         />
                         <motion.div
                             className={`absolute inset-0 bg-black/50 flex flex-col items-center justify-end p-6 ${selectedPalette.text}`}

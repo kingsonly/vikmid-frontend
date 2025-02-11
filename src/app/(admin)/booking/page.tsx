@@ -5,8 +5,8 @@ import { Card, CardContent } from "@/components/ui/card"
 import { LinkIcon, BookOpen, ShoppingBag, Calendar, CreditCard, Mail, MessageSquare } from 'lucide-react'
 import LinkInBio from "@/components/link-in-bio/LinkInBio"
 import Booking from "@/components/booking/Booking"
-
-export default function BookingPage() {
+import withAuth from "@/utils/withAuth"
+function BookingPage() {
 
 
   return (
@@ -16,3 +16,4 @@ export default function BookingPage() {
     </main>
   );
 }
+export default withAuth(BookingPage, true);
