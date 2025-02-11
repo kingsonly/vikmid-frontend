@@ -74,7 +74,7 @@ export default function AdminLayout({
 
               <>
 
-                <li><Link href="#" className="flex items-center p-2 rounded-lg hover:bg-gradient-to-r hover:from-pink-500 hover:via-purple-500 hover:to-indigo-500 text-gray-300 hover:text-white transition-colors"><BookOpen className="mr-2" /> My Courses</Link></li>
+                <li><Link href="/my-courses" className="flex items-center p-2 rounded-lg hover:bg-gradient-to-r hover:from-pink-500 hover:via-purple-500 hover:to-indigo-500 text-gray-300 hover:text-white transition-colors"><BookOpen className="mr-2" /> My Courses</Link></li>
                 <li><Link href="#" className="flex items-center p-2 rounded-lg hover:bg-gradient-to-r hover:from-pink-500 hover:via-purple-500 hover:to-indigo-500 text-gray-300 hover:text-white transition-colors"><ShoppingBag className="mr-2" /> My Purchases</Link></li>
                 <li><Link href="#" className="flex items-center p-2 rounded-lg hover:bg-gradient-to-r hover:from-pink-500 hover:via-purple-500 hover:to-indigo-500 text-gray-300 hover:text-white transition-colors"><Calendar className="mr-2" /> My Bookings</Link></li>
                 <li><Link href="/my-subscription" className="flex items-center p-2 rounded-lg hover:bg-gradient-to-r hover:from-pink-500 hover:via-purple-500 hover:to-indigo-500 text-gray-300 hover:text-white transition-colors"><Users className="mr-2" /> My Subscriptions</Link></li>
