@@ -54,9 +54,9 @@ export function ProductList({ products, onProductSelect }) {
             <Card className="bg-gray-800 border-gray-700">
                 <CardHeader>
                     <CardTitle>Your Products</CardTitle>
-                    <DialogTrigger asChild>
-                        <Button onClick={() => setOpen(true)}>Add Product</Button>
-                    </DialogTrigger>
+                    {/* <DialogTrigger asChild> */}
+                    <Button onClick={() => setOpen(true)}>Add Product</Button>
+                    {/* </DialogTrigger> */}
                 </CardHeader>
                 <CardContent>
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -120,24 +120,24 @@ export function ProductList({ products, onProductSelect }) {
                                     <option value="physical">Physical</option>
                                 </select>
                             </div>
-Jsx
-<div>
-    <Label htmlFor="image">Image</Label>
-    <Input id="image" type="file" onChange={(e) => setImage(e.target.files[0])} />
-</div>
-<div>
-    <Label htmlFor="file">File (digital products only)</Label>
-    <Input id="file" type="file" onChange={(e) => setFile(e.target.files[0])} />
-</div>
-<DialogFooter>
-    <Button type="submit">Add Product</Button>
-    <Button type="button" onClick={() => setOpen(false)}>Cancel</Button>
-</DialogFooter>
-</div>
-</form>
-</DialogContent>
-</Dialog>
-</div>
-)
+                            Jsx
+                            <div>
+                                <Label htmlFor="image">Image</Label>
+                                <Input id="image" type="file" onChange={(e) => setImage(e.target.files[0])} />
+                            </div>
+                            <div>
+                                <Label htmlFor="file">File (digital products only)</Label>
+                                <Input id="file" type="file" onChange={(e) => setFile(e.target.files[0])} />
+                            </div>
+                            <DialogFooter>
+                                <Button type="submit">Add Product</Button>
+                                <Button type="button" onClick={() => setOpen(false)}>Cancel</Button>
+                            </DialogFooter>
+                        </div>
+                    </form>
+                </DialogContent>
+            </Dialog>
+        </div>
+    )
 }
 /*This code completes the product form with fields for image and file uploads, and includes buttons to submit the form or cancel the operation. The form is wrapped in a dialog component that can be opened or closed by clicking the "Add Product" button.*/
