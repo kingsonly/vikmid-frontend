@@ -18,13 +18,16 @@ interface ProductCreationWizardProps {
 
 export function ProductCreationWizard({ onCancel }: ProductCreationWizardProps) {
     const [step, setStep] = useState(1)
-    const [productData, setProductData] = useState({
+    const [isEditing, setIsEditing] = useState<boolean>(false)
+    const [productData, setProductData] = useState<any>({
         type: '',
         basicInfo: {},
         details: {},
         variants: [],
         upsells: [],
         discounts: {},
+        isEditing: "",
+        onUpdate: "",
     })
 
     const steps = [
@@ -39,6 +42,7 @@ export function ProductCreationWizard({ onCancel }: ProductCreationWizardProps) 
 
     const CurrentStepComponent = steps[step - 1].component
 
+    const handleUpdate = () => { }
     const handleNext = (stepData: any) => {
         setProductData(prevData => ({ ...prevData, ...stepData }))
         setStep(prevStep => prevStep + 1)
@@ -70,6 +74,8 @@ export function ProductCreationWizard({ onCancel }: ProductCreationWizardProps) 
                 <CardContent>
                     <CurrentStepComponent
                         productData={productData}
+                        isEditing={isEditing} // Ensure this value is available in the parent component
+                        onUpdate={handleUpdate}
                         onNext={handleNext}
                     />
                 </CardContent>

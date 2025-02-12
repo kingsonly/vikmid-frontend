@@ -54,7 +54,7 @@ export default function PlanConfirmation({ selectedPlan = "pro" }) {
     }
     const handleConfirmPlan = async () => {
         setPaymentLoader(true);
-        const config = {
+        const config: any = {
             public_key: process.env.NEXT_PUBLIC_FLW_PUBLIC_KEY,
             tx_ref: Date.now(),
             //payment_plan: plan.paymentPlanId,
