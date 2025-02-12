@@ -16,8 +16,8 @@ export function ProductList({ products, onProductSelect }) {
     const [description, setDescription] = useState('')
     const [price, setPrice] = useState(0)
     const [type, setType] = useState('digital')
-    const [image, setImage] = useState(null)
-    const [file, setFile] = useState(null)
+    const [image, setImage] = useState<File | null>(null)
+    const [file, setFile] = useState<File | null>(null)
 
     const handleSubmit = (e) => {
         e.preventDefault()
@@ -123,11 +123,28 @@ export function ProductList({ products, onProductSelect }) {
                             Jsx
                             <div>
                                 <Label htmlFor="image">Image</Label>
-                                <Input id="image" type="file" onChange={(e) => setImage(e.target.files[0])} />
+                                <Input
+                                    id="image"
+                                    type="file"
+                                    onChange={(e) => {
+                                        if (e.target.files && e.target.files.length > 0) {
+                                            setImage(e.target.files[0]);
+                                        }
+                                    }}
+
+                                />
                             </div>
                             <div>
                                 <Label htmlFor="file">File (digital products only)</Label>
-                                <Input id="file" type="file" onChange={(e) => setFile(e.target.files[0])} />
+                                <Input
+                                    id="file"
+                                    type="file"
+                                    onChange={(e) => {
+                                        if (e.target.files && e.target.files.length > 0) {
+                                            setFile(e.target.files[0]);
+                                        }
+                                    }}
+                                />
                             </div>
                             <DialogFooter>
                                 <Button type="submit">Add Product</Button>
