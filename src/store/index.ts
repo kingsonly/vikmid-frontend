@@ -3,11 +3,13 @@ import { persistStore, persistReducer } from 'redux-persist';
 import storage from 'redux-persist/lib/storage'; // Default to localStorage for web
 import counterReducer from './slices/counterSlice';
 import usersDetailsSlice from './users-basic-details/usersDetailsSlice';
+import linkInBioSlice from './link-in-bio/linkInBioSlice';
 
 
 const rootReducer = combineReducers({
     counter: counterReducer,
     userDetails: usersDetailsSlice,
+    linkInBio: linkInBioSlice,
 });
 
 // Persist configuration

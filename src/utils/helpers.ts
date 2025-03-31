@@ -2,6 +2,8 @@
 import useTokens from "../hooks/useTokens"; // Assuming this hook works with Next.js
 import { useEffect } from "react";
 import { toast } from "react-toastify";
+import { AlertTriangle, Camera, Copy, ExternalLink, Instagram, Share2, Twitter, Facebook, LinkedinIcon as LinkedIn, YoutubeIcon as YouTube, TwitterIcon as TikTok, Twitch, Github, Dribbble, Plus, Trash2 } from 'lucide-react'
+import { FaTiktok } from "react-icons/fa"
 
 export function copyToClipboard(value: any) {
   if (!navigator.clipboard) {
@@ -78,3 +80,21 @@ export const checkIfArraysAreEqual = (arr1: string[], arr2: string[]) => {
   if (arr1.length !== arr2.length) return false;
   return arr1.every((item) => arr2.includes(item));
 };
+
+export const socialPlatforms = [
+  { name: 'Instagram', icon: Instagram, link: 'https://www.instagram.com/' }, // Append username
+  { name: 'Twitter', icon: Twitter, link: 'https://twitter.com/' }, // Append username
+  { name: 'Facebook', icon: Facebook, link: 'https://www.facebook.com/' }, // Append username
+  { name: 'LinkedIn', icon: LinkedIn, link: 'https://www.linkedin.com/in/' }, // Append username
+  { name: 'YouTube', icon: YouTube, link: 'https://www.youtube.com/@' }, // Append channel username
+  { name: 'TikTok', icon: FaTiktok, link: 'https://www.tiktok.com/@' }, // Append username
+  { name: 'Twitch', icon: Twitch, link: 'https://www.twitch.tv/' }, // Append username
+  { name: 'Github', icon: Github, link: 'https://github.com/' }, // Append username
+  { name: 'Dribbble', icon: Dribbble, link: 'https://dribbble.com/' }, // Append username
+];
+
+export const getSocialPlatform = (name: string) => {
+  return socialPlatforms.find((platform) => platform.name === name)
+}
+
+

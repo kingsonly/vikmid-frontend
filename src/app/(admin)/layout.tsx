@@ -11,7 +11,7 @@ import { Switch } from "@/components/ui/switch"
 import { Label } from "@/components/ui/label"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
-import { MessageSquare, BookOpen, ShoppingBag, Calendar, CreditCard, Mail, LinkIcon, Users, Settings, Menu, X } from 'lucide-react'
+import { MessageSquare, BookOpen, ShoppingBag, Calendar, CreditCard, Mail, LinkIcon, Users, Settings, Menu, X, LayoutDashboard } from 'lucide-react'
 import { useSelector, useDispatch } from 'react-redux';
 import { RootState, AppDispatch } from '../../store';
 import { updateIsCreator } from '../../store/users-basic-details/usersDetailsSlice';
@@ -36,7 +36,7 @@ export default function AdminLayout({
 
   const sidebarContent = useMemo(() => {
     return <ul className="space-y-2">
-      <li><Link href="/dashboard" className="flex items-center p-2 hover:text-indigo-400 transition-colors"><LinkIcon className="mr-2" /> Dashboard</Link></li>
+      <li><Link href="/dashboard" className="flex items-center p-2 hover:text-indigo-400 transition-colors">< LayoutDashboard className="mr-2" /> Dashboard</Link></li>
       {usersDetails.isCreator && usersDetails.activeHub ? (
         <>
 
