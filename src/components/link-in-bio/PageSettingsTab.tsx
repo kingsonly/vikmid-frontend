@@ -61,8 +61,8 @@ export default function PageSettingsTab(param: PageSettingsTabProps) {
     const [hidePaletteCustomizeView, setHidePaletteCustomizeView] = useState(false)
     const [selectedTemplate, setSelectedTemplate] = useState<string>('')
     const [selectedPalette, setSelectedPalette] = useState<ColorPalette | null>()
-    const [profileImage, setProfileImage] = useState<ImageType>({ url: linkInBioState.profilePicture && linkInBioState.profilePicture?.length > 0 ? linkInBioState.profilePicture : "/public/bioprofile.jpg", file: null })
-    const [bannerImage, setBannerImage] = useState<ImageType>({ url: linkInBioState.banner && linkInBioState.banner?.length > 0 ? linkInBioState.banner : "/public/bioprofile.jpg", file: null })
+    const [profileImage, setProfileImage] = useState<ImageType>({ url: linkInBioState.profilePicture && linkInBioState.profilePicture?.length > 0 ? linkInBioState.profilePicture : "/bioprofile.jpg", file: null })
+    const [bannerImage, setBannerImage] = useState<ImageType>({ url: linkInBioState.banner && linkInBioState.banner?.length > 0 ? linkInBioState.banner : "/bioprofile.jpg", file: null })
 
     const dispatch = useDispatch<AppDispatch>();
     const { apiCall } = useApiCall();
@@ -667,7 +667,7 @@ export default function PageSettingsTab(param: PageSettingsTabProps) {
                 <Label className="block">Profile Picture</Label>
                 <div className="relative w-32 h-32 mx-auto">
                     <Image
-                        src={profileImage.url.length > 0 ? profileImage.url : "/public/bioprofile.jpg"}
+                        src={profileImage.url.length > 0 ? profileImage.url : "/bioprofile.jpg"}
                         alt="Profile"
                         fill
                         className="rounded-full object-cover"
@@ -751,7 +751,7 @@ export default function PageSettingsTab(param: PageSettingsTabProps) {
                     <Label className="block">Banner Image</Label>
                     <div className="relative w-full h-32">
                         <Image
-                            src={bannerImage.url.length > 0 ? bannerImage.url : "/public/bioprofile.jpg"}
+                            src={bannerImage.url.length > 0 ? bannerImage.url : "/bioprofile.jpg"}
                             alt="Banner"
                             fill
                             priority
