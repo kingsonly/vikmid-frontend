@@ -68,3 +68,20 @@ export interface LinkInBioState {
     socialLinks?: SocialLink[] | null;
 }
 
+export interface PlatformPercentageInterface {
+    mobile: number;
+    desktop: number;
+}
+
+export interface TopBrowserInterface {
+    name: string;
+    count: number;
+    percentage: number;
+}
+
+export interface BusiestDayInterface {
+    day: string;
+    count: number;
+    percentage: number;
+}
+

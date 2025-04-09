@@ -265,7 +265,7 @@ export default function LinkInBioTemplate({
                                 {safeState.pages.map((page) => (
                                     <button
                                         key={page.id}
-                                        className={`w-full text-left p-3 rounded-md transition-colors ${page.id === activePage ? "font-bold" : ""
+                                        className={`w-full text-left p-3 rounded-md transition-colors capitalize ${page.id === activePage ? "font-bold" : ""
                                             }`}
                                         style={{
                                             color: themeColors.text,
@@ -287,426 +287,6 @@ export default function LinkInBioTemplate({
         }
     }
 
-    // Page navigation menu
-    // const PageMenu = () => (
-    //     <AnimatePresence>
-    //         {menuOpen && (
-    //             <motion.div
-    //                 initial={{ opacity: 0, y: -20 }}
-    //                 animate={{ opacity: 1, y: 0 }}
-    //                 exit={{ opacity: 0, y: -20 }}
-    //                 className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-70"
-    //                 onClick={() => setMenuOpen(false)}
-    //             >
-    //                 <motion.div
-    //                     initial={{ scale: 0.9 }}
-    //                     animate={{ scale: 1 }}
-    //                     exit={{ scale: 0.9 }}
-    //                     className="bg-opacity-90 p-6 rounded-lg max-w-sm w-full mx-4"
-    //                     style={{ backgroundColor: themeColors.background }}
-    //                     onClick={(e) => e.stopPropagation()}
-    //                 >
-    //                     <div className="flex justify-between items-center mb-4">
-    //                         <h3 className="text-xl font-bold" style={{ color: themeColors.text }}>
-    //                             Pages
-    //                         </h3>
-    //                         <button
-    //                             onClick={() => setMenuOpen(false)}
-    //                             className="p-1 rounded-full hover:bg-opacity-10"
-    //                             style={{ color: themeColors.text, backgroundColor: `${themeColors.accent}30` }}
-    //                         >
-    //                             <X className="w-5 h-5" />
-    //                         </button>
-    //                     </div>
-    //                     <div className="space-y-2">
-    //                         {safeState.pages.map((page) => (
-    //                             <button
-    //                                 key={page.id}
-    //                                 className={`w-full text-left p-3 rounded-md transition-colors ${page.id === activePage ? "font-bold" : ""
-    //                                     }`}
-    //                                 style={{
-    //                                     color: themeColors.text,
-    //                                     backgroundColor: page.id === activePage ? `${themeColors.accent}30` : "transparent",
-    //                                 }}
-    //                                 onClick={() => {
-    //                                     setActivePage(page.id)
-    //                                     setMenuOpen(false)
-    //                                 }}
-    //                             >
-    //                                 {page.name}
-    //                             </button>
-    //                         ))}
-    //                     </div>
-    //                 </motion.div>
-    //             </motion.div>
-    //         )}
-    //     </AnimatePresence>
-    // )
-
-
-
-    // Template rendering based on selected template
-    // const renderTemplate = () => {
-    //     switch (selectedTemplate) {
-    //         case "classic":
-    //             return (
-    //                 <div
-    //                     className="flex flex-col items-center space-y-6 p-6 min-h-full relative"
-    //                     style={{ backgroundColor: themeColors.background }}
-    //                 >
-    //                     {/* Menu Button */}
-    //                     {safeState.pages.length > 1 && (
-    //                         <button
-    //                             onClick={() => setMenuOpen(true)}
-    //                             className="absolute top-4 right-4 p-2 rounded-full hover:bg-opacity-10"
-    //                             style={{
-    //                                 color: themeColors.text,
-    //                                 backgroundColor: `${themeColors.accent}30`,
-    //                             }}
-    //                         >
-    //                             <Menu className="w-5 h-5" />
-    //                         </button>
-    //                     )}
-
-    //                     {/* Profile Image */}
-    //                     <motion.div
-    //                         className="relative w-24 h-24"
-    //                         initial={{ scale: 0 }}
-    //                         animate={{ scale: 1 }}
-    //                         transition={{ type: "spring", stiffness: 260, damping: 20 }}
-    //                     >
-    //                         <Image
-    //                             src={profileImage.url || "/placeholder.svg?height=600&width=600"}
-    //                             alt="Profile"
-    //                             fill
-    //                             className="rounded-full object-cover"
-    //                         />
-    //                     </motion.div>
-
-    //                     {/* Username and Social Icons */}
-    //                     <div className="text-center">
-    //                         <motion.h2
-    //                             className="text-xl font-bold"
-    //                             initial={{ opacity: 0, y: -20 }}
-    //                             animate={{ opacity: 1, y: 0 }}
-    //                             transition={{ delay: 0.2 }}
-    //                             style={{ color: themeColors.text }}
-    //                         >
-    //                             {username}
-    //                         </motion.h2>
-    //                         <SocialIcons />
-    //                     </div>
-
-    //                     {/* Current Page Name */}
-    //                     {currentPage && (
-    //                         <motion.h3
-    //                             className="text-lg font-medium"
-    //                             initial={{ opacity: 0 }}
-    //                             animate={{ opacity: 1 }}
-    //                             style={{ color: themeColors.text }}
-    //                         >
-    //                             {currentPage.name}
-    //                         </motion.h3>
-    //                     )}
-
-    //                     {/* Sections and Links */}
-    //                     <motion.div
-    //                         className="w-full space-y-4 max-w-sm"
-    //                         initial={{ opacity: 0 }}
-    //                         animate={{ opacity: 1 }}
-    //                         transition={{ delay: 0.4 }}
-    //                     >
-    //                         {currentPage?.sections?.map((section, sectionIndex) => (
-    //                             <Accordion key={section.id} type="single" collapsible className="w-full">
-    //                                 <AccordionItem
-    //                                     value={section.id}
-    //                                     className="border rounded-md overflow-hidden"
-    //                                     style={{ borderColor: `${themeColors.text}30` }}
-    //                                 >
-    //                                     <AccordionTrigger className="px-4 py-3 hover:no-underline" style={{ color: themeColors.text }}>
-    //                                         {section.title || `Section ${sectionIndex + 1}`}
-    //                                     </AccordionTrigger>
-    //                                     <AccordionContent className="px-4 pb-3 pt-1">
-    //                                         <div className="space-y-3">
-    //                                             {section.links?.map((link, linkIndex) => (
-    //                                                 <motion.a
-    //                                                     key={link.id}
-    //                                                     href={link.link}
-    //                                                     target="_blank"
-    //                                                     rel="noopener noreferrer"
-    //                                                     className={linkClasses}
-    //                                                     style={{
-    //                                                         color: themeColors.text,
-    //                                                         borderColor: `${themeColors.text}30`,
-    //                                                         backgroundColor: "transparent",
-    //                                                     }}
-    //                                                     whileHover={{
-    //                                                         backgroundColor: `${themeColors.accent}20`,
-    //                                                     }}
-    //                                                     initial={{ opacity: 0, x: -20 }}
-    //                                                     animate={{ opacity: 1, x: 0 }}
-    //                                                     transition={{ delay: 0.1 * linkIndex }}
-    //                                                 >
-    //                                                     {link.title}
-    //                                                 </motion.a>
-    //                                             ))}
-    //                                             {(!section.links || section.links.length === 0) && (
-    //                                                 <p className="text-center text-sm opacity-70" style={{ color: themeColors.text }}>
-    //                                                     No links in this section
-    //                                                 </p>
-    //                                             )}
-    //                                         </div>
-    //                                     </AccordionContent>
-    //                                 </AccordionItem>
-    //                             </Accordion>
-    //                         ))}
-    //                         {(!currentPage?.sections || currentPage.sections.length === 0) && (
-    //                             <p className="text-center py-4 opacity-70" style={{ color: themeColors.text }}>
-    //                                 No sections in this page
-    //                             </p>
-    //                         )}
-    //                     </motion.div>
-
-    //                     {/* Page Menu */}
-    //                     <PageMenu />
-    //                 </div>
-    //             )
-
-    //         case "portrait":
-    //             return (
-    //                 <div className="relative min-h-full">
-    //                     {/* Background Image */}
-    //                     <Image
-    //                         src={profileImage.url || "/placeholder.svg?height=600&width=600"}
-    //                         alt="Profile"
-    //                         fill
-    //                         className="object-cover"
-    //                     />
-
-    //                     <motion.div
-    //                         className="absolute inset-0 flex flex-col items-center justify-end p-6"
-    //                         style={{ backgroundColor: "rgba(0,0,0,0.6)" }}
-    //                         initial={{ opacity: 0 }}
-    //                         animate={{ opacity: 1 }}
-    //                     >
-    //                         {/* Menu Button */}
-    //                         {safeState.pages.length > 1 && (
-    //                             <button
-    //                                 onClick={() => setMenuOpen(true)}
-    //                                 className="absolute top-4 right-4 p-2 rounded-full hover:bg-opacity-20"
-    //                                 style={{
-    //                                     color: "#ffffff",
-    //                                     backgroundColor: `${themeColors.accent}50`,
-    //                                 }}
-    //                             >
-    //                                 <Menu className="w-5 h-5" />
-    //                             </button>
-    //                         )}
-
-    //                         {/* Username and Social Icons */}
-    //                         <motion.h2
-    //                             className="text-xl font-bold text-white"
-    //                             initial={{ opacity: 0, y: 20 }}
-    //                             animate={{ opacity: 1, y: 0 }}
-    //                         >
-    //                             {username}
-    //                         </motion.h2>
-    //                         <SocialIcons />
-
-    //                         {/* Current Page Name */}
-    //                         {currentPage && (
-    //                             <motion.h3
-    //                                 className="text-lg font-medium text-white mt-2"
-    //                                 initial={{ opacity: 0 }}
-    //                                 animate={{ opacity: 1 }}
-    //                             >
-    //                                 {currentPage.name}
-    //                             </motion.h3>
-    //                         )}
-
-    //                         {/* Sections and Links */}
-    //                         <motion.div
-    //                             className="w-full space-y-4 max-w-sm mt-6"
-    //                             initial={{ opacity: 0 }}
-    //                             animate={{ opacity: 1 }}
-    //                             transition={{ delay: 0.2 }}
-    //                         >
-    //                             {currentPage?.sections?.map((section, sectionIndex) => (
-    //                                 <Accordion key={section.id} type="single" collapsible className="w-full">
-    //                                     <AccordionItem
-    //                                         value={section.id}
-    //                                         className="border rounded-md overflow-hidden"
-    //                                         style={{ borderColor: "rgba(255,255,255,0.3)" }}
-    //                                     >
-    //                                         <AccordionTrigger className="px-4 py-3 hover:no-underline text-white">
-    //                                             {section.title || `Section ${sectionIndex + 1}`}
-    //                                         </AccordionTrigger>
-    //                                         <AccordionContent className="px-4 pb-3 pt-1">
-    //                                             <div className="space-y-3">
-    //                                                 {section.links?.map((link, linkIndex) => (
-    //                                                     <motion.a
-    //                                                         key={link.id}
-    //                                                         href={link.link}
-    //                                                         target="_blank"
-    //                                                         rel="noopener noreferrer"
-    //                                                         className={`${linkClasses} text-white border-white border-opacity-30`}
-    //                                                         whileHover={{
-    //                                                             backgroundColor: `${themeColors.accent}40`,
-    //                                                         }}
-    //                                                         initial={{ opacity: 0, y: 10 }}
-    //                                                         animate={{ opacity: 1, y: 0 }}
-    //                                                         transition={{ delay: 0.1 * linkIndex }}
-    //                                                     >
-    //                                                         {link.title}
-    //                                                     </motion.a>
-    //                                                 ))}
-    //                                                 {(!section.links || section.links.length === 0) && (
-    //                                                     <p className="text-center text-sm text-white text-opacity-70">No links in this section</p>
-    //                                                 )}
-    //                                             </div>
-    //                                         </AccordionContent>
-    //                                     </AccordionItem>
-    //                                 </Accordion>
-    //                             ))}
-    //                             {(!currentPage?.sections || currentPage.sections.length === 0) && (
-    //                                 <p className="text-center py-4 text-white text-opacity-70">No sections in this page</p>
-    //                             )}
-    //                         </motion.div>
-
-    //                         {/* Page Menu */}
-    //                         <PageMenu />
-    //                     </motion.div>
-    //                 </div>
-    //             )
-
-    //         case "banner":
-    //             return (
-    //                 <div className="flex flex-col min-h-full" style={{ backgroundColor: themeColors.background }}>
-    //                     {/* Banner Image */}
-    //                     <div className="relative h-40">
-    //                         <Image
-    //                             src={bannerImage.url || "/placeholder.svg?height=600&width=1200"}
-    //                             alt="Banner"
-    //                             fill
-    //                             className="object-cover"
-    //                         />
-
-    //                         {/* Menu Button */}
-    //                         {safeState.pages.length > 1 && (
-    //                             <button
-    //                                 onClick={() => setMenuOpen(true)}
-    //                                 className="absolute top-4 right-4 p-2 rounded-full bg-black bg-opacity-50 hover:bg-opacity-70"
-    //                                 style={{ color: "#ffffff" }}
-    //                             >
-    //                                 <Menu className="w-5 h-5" />
-    //                             </button>
-    //                         )}
-    //                     </div>
-
-    //                     <div className="flex-1">
-    //                         <motion.div
-    //                             className="relative -mt-12 flex flex-col items-center"
-    //                             initial={{ opacity: 0, y: 50 }}
-    //                             animate={{ opacity: 1, y: 0 }}
-    //                         >
-    //                             {/* Profile Image */}
-    //                             <div
-    //                                 className="relative w-24 h-24 border-4 rounded-full overflow-hidden"
-    //                                 style={{ borderColor: themeColors.background }}
-    //                             >
-    //                                 <Image
-    //                                     src={profileImage.url || "/placeholder.svg?height=600&width=600"}
-    //                                     alt="Profile"
-    //                                     fill
-    //                                     className="object-cover"
-    //                                 />
-    //                             </div>
-
-    //                             {/* Username and Social Icons */}
-    //                             <h2 className="text-xl font-bold mt-4" style={{ color: themeColors.text }}>
-    //                                 {username}
-    //                             </h2>
-    //                             <SocialIcons />
-
-    //                             {/* Current Page Name */}
-    //                             {currentPage && (
-    //                                 <h3 className="text-lg font-medium mt-2" style={{ color: themeColors.text }}>
-    //                                     {currentPage.name}
-    //                                 </h3>
-    //                             )}
-
-    //                             {/* Sections and Links */}
-    //                             <motion.div
-    //                                 className="w-full space-y-4 max-w-sm px-6 mt-6"
-    //                                 initial={{ opacity: 0 }}
-    //                                 animate={{ opacity: 1 }}
-    //                                 transition={{ delay: 0.2 }}
-    //                             >
-    //                                 {currentPage?.sections?.map((section, sectionIndex) => (
-    //                                     <Accordion key={section.id} type="single" collapsible className="w-full">
-    //                                         <AccordionItem
-    //                                             value={section.id}
-    //                                             className="border rounded-md overflow-hidden"
-    //                                             style={{ borderColor: `${themeColors.text}30` }}
-    //                                         >
-    //                                             <AccordionTrigger className="px-4 py-3 hover:no-underline" style={{ color: themeColors.text }}>
-    //                                                 {section.title || `Section ${sectionIndex + 1}`}
-    //                                             </AccordionTrigger>
-    //                                             <AccordionContent className="px-4 pb-3 pt-1">
-    //                                                 <div className="space-y-3">
-    //                                                     {section.links?.map((link, linkIndex) => (
-    //                                                         <motion.a
-    //                                                             key={link.id}
-    //                                                             href={link.link}
-    //                                                             target="_blank"
-    //                                                             rel="noopener noreferrer"
-    //                                                             className={linkClasses}
-    //                                                             style={{
-    //                                                                 color: themeColors.text,
-    //                                                                 borderColor: `${themeColors.text}30`,
-    //                                                             }}
-    //                                                             whileHover={{
-    //                                                                 backgroundColor: `${themeColors.accent}20`,
-    //                                                             }}
-    //                                                             initial={{ opacity: 0, x: -20 }}
-    //                                                             animate={{ opacity: 1, x: 0 }}
-    //                                                             transition={{ delay: 0.1 * linkIndex }}
-    //                                                         >
-    //                                                             {link.title}
-    //                                                         </motion.a>
-    //                                                     ))}
-    //                                                     {(!section.links || section.links.length === 0) && (
-    //                                                         <p className="text-center text-sm opacity-70" style={{ color: themeColors.text }}>
-    //                                                             No links in this section
-    //                                                         </p>
-    //                                                     )}
-    //                                                 </div>
-    //                                             </AccordionContent>
-    //                                         </AccordionItem>
-    //                                     </Accordion>
-    //                                 ))}
-    //                                 {(!currentPage?.sections || currentPage.sections.length === 0) && (
-    //                                     <p className="text-center py-4 opacity-70" style={{ color: themeColors.text }}>
-    //                                         No sections in this page
-    //                                     </p>
-    //                                 )}
-    //                             </motion.div>
-    //                         </motion.div>
-    //                     </div>
-
-    //                     {/* Page Menu */}
-    //                     <PageMenu />
-    //                 </div>
-    //             )
-
-    //         default:
-    //             return (
-    //                 <div className="flex items-center justify-center h-full">
-    //                     <p>Template not found</p>
-    //                 </div>
-    //             )
-    //     }
-    // }
 
     const renderTemplate = () => {
 
@@ -753,7 +333,7 @@ export default function LinkInBioTemplate({
                                 </motion.div>
 
                                 {/* Username and Social Icons */}
-                                <div className="text-center mt-2">
+                                <div className="text-center mt-2 capitalize">
                                     <motion.h2
                                         className="text-xl font-bold"
                                         initial={{ opacity: 0, y: -20 }}
@@ -769,7 +349,7 @@ export default function LinkInBioTemplate({
                                 {/* Current Page Name */}
                                 {currentPage && (
                                     <motion.h3
-                                        className="text-lg font-medium"
+                                        className="text-lg font-medium capitalize"
                                         initial={{ opacity: 0 }}
                                         animate={{ opacity: 1 }}
                                         style={{ color: themeColors.text }}
@@ -855,7 +435,7 @@ export default function LinkInBioTemplate({
 
                                     {/* Username and Social Icons */}
                                     <motion.h2
-                                        className="text-xl font-bold text-white mb-6"
+                                        className="text-xl font-bold text-white mb-6 capitalize"
                                         initial={{ opacity: 0, y: -10 }}
                                         animate={{ opacity: 1, y: 0 }}
                                     >
@@ -866,7 +446,7 @@ export default function LinkInBioTemplate({
                                     {/* Current Page Name */}
                                     {currentPage && (
                                         <motion.h3
-                                            className="text-lg font-medium text-white mt-2"
+                                            className="text-lg font-medium text-white mt-2 capitalize"
                                             initial={{ opacity: 0 }}
                                             animate={{ opacity: 1 }}
                                         >
@@ -960,14 +540,14 @@ export default function LinkInBioTemplate({
                                         </div>
 
                                         {/* Username and Social Icons */}
-                                        <h2 className="text-xl font-bold mt-4" style={{ color: themeColors.text }}>
+                                        <h2 className="text-xl font-bold mt-4 capitalize" style={{ color: themeColors.text }}>
                                             {safeState.displayName}
                                         </h2>
                                         <SocialIcons />
 
                                         {/* Current Page Name */}
                                         {currentPage && (
-                                            <h3 className="text-lg font-medium mt-2" style={{ color: themeColors.text }}>
+                                            <h3 className="text-lg font-medium mt-2 capitalize" style={{ color: themeColors.text }}>
                                                 {currentPage.name}
                                             </h3>
                                         )}

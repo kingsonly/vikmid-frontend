@@ -11,7 +11,7 @@ function LinkInBioPage() {
 
 
   return (
-    <main className="flex-1 p-8 overflow-auto ">
+    <main className="flex-1  sm:p-8 overflow-auto ">
 
       <LinkInBio />
     </main>

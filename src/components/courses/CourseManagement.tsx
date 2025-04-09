@@ -344,19 +344,19 @@ export function CourseManagement() {
         content: selectedCourse.content.map((topic) =>
           topic.id === selectedTopicId
             ? {
-                ...topic,
-                lessons: editingLesson
-                  ? topic.lessons.map((lesson) =>
-                      lesson.id === editingLesson.id ? { ...lesson, ...newLesson } : lesson,
-                    )
-                  : [
-                      ...topic.lessons,
-                      {
-                        id: Date.now().toString(),
-                        ...newLesson,
-                      },
-                    ],
-              }
+              ...topic,
+              lessons: editingLesson
+                ? topic.lessons.map((lesson) =>
+                  lesson.id === editingLesson.id ? { ...lesson, ...newLesson } : lesson,
+                )
+                : [
+                  ...topic.lessons,
+                  {
+                    id: Date.now().toString(),
+                    ...newLesson,
+                  },
+                ],
+            }
             : topic,
         ),
       }
@@ -786,9 +786,8 @@ export function CourseManagement() {
         <div className="max-w-7xl mx-auto ">
           {statusMessage && (
             <div
-              className={`fixed top-4 right-4 p-4 rounded-md ${
-                statusMessage.type === "success" ? "bg-green-500" : "bg-red-500"
-              } text-white`}
+              className={`fixed top-4 right-4 p-4 rounded-md ${statusMessage.type === "success" ? "bg-green-500" : "bg-red-500"
+                } text-white`}
             >
               {statusMessage.message}
             </div>

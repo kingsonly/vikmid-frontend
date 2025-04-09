@@ -30,8 +30,10 @@ interface LinkCreationModalInterface {
 export default function LinkCreationModal({ isOpen, onClose, activeSection, onSave }: LinkCreationModalInterface) {
     const [section, setSection] = useState(activeSection)
     const [isLoading, setIsLoading] = useState(false)
+    const [urlStatus, setUrlStatus] = useState(false)
     const [title, setTitle] = useState<string>("")
     const [link, setLink] = useState<string>("")
+    const [linkError, setLinkError] = useState<string>("")
     const { apiCall } = useApiCall();
     const dispatch = useDispatch<AppDispatch>();
 
@@ -43,23 +45,62 @@ export default function LinkCreationModal({ isOpen, onClose, activeSection, onSa
         }
     }, [activeSection])
 
-    function formatURL(str) {
-        try {
-            // Try creating a URL object to check if it's already valid
-            new URL(str);
-            return str;
-        } catch (e) {
-            // If invalid, check if adding 'http://' makes it valid
-            try {
-                let fixedUrl = "http://" + str;
-                new URL(fixedUrl);
-                return fixedUrl;
-            } catch (e) {
-                return null; // Return null if still invalid
-            }
+    useEffect(() => {
+        if (!isOpen) {
+            setTitle("")
+            setLink("")
+            setLinkError("")
+        }
+    }, [isOpen])
+
+    const validateLink = (url: string): boolean => {
+        if (!url.trim()) {
+            setLinkError("Link is required")
+            setUrlStatus(false)
+            return false
+        }
+
+        // Remove spaces and normalize the URL
+        let normalizedUrl = url.trim()
+
+        // Check if it has a protocol, if not add http://
+        if (!/^https?:\/\//i.test(normalizedUrl)) {
+            normalizedUrl = "https://" + normalizedUrl
+        }
+
+        // Use a more comprehensive regex for URL validation
+        // This checks for a valid domain name structure
+        const urlPattern =
+            /^(https?:\/\/)((([a-z\d]([a-z\d-]*[a-z\d])*)\.)+[a-z]{2,}|((\d{1,3}\.){3}\d{1,3}))(:\d+)?(\/[-a-z\d%_.~+]*)*(\?[;&a-z\d%_.~+=-]*)?(#[-a-z\d_]*)?$/i
+
+        if (!urlPattern.test(normalizedUrl)) {
+            setLinkError("Please enter a valid URL (e.g., example.com or https://example.com)")
+            setUrlStatus(false)
+            return false
+        }
+
+        // If we get here, it's a valid URL
+        setLink(normalizedUrl) // Update with the normalized version
+        setLinkError("")
+        setUrlStatus(true)
+        return true
+    }
+
+    const handleLinkChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const value = e.target.value
+        setLink(value)
+        // Clear error when user starts typing again
+        if (linkError) setLinkError("")
+    }
+
+    const handleLinkBlur = () => {
+        if (link.trim()) {
+            validateLink(link)
         }
     }
+
     const handleSave = async () => {
+        if (!urlStatus || !title || !link) return
         if (!section) return
         setIsLoading(true)
         try {
@@ -119,11 +160,12 @@ export default function LinkCreationModal({ isOpen, onClose, activeSection, onSa
                     <Label>Link  </Label>
                     < Input
                         value={link}
-                        onChange={(e) => setLink(e.target.value)
-                        }
-                        className="bg-gray-700"
                         placeholder="Enter New link"
+                        onChange={handleLinkChange}
+                        onBlur={handleLinkBlur}
+                        className={`bg-gray-700 ${linkError ? "border-red-500" : ""}`}
                     />
+                    {linkError && <p className="text-red-500 text-sm mt-1">{linkError}</p>}
                 </div>
             </div>
 

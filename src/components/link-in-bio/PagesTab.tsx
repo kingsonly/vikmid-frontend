@@ -30,6 +30,7 @@ import { LoadingSpinner } from '../loader/Loader';
 import PageEditModal from './PageEditModal';
 import PageSection from './PageSection';
 import DeleteConfirm from '../DeleteConfirm/DeleteConfirm';
+import ListComponent from '../ListComponent/ListComponent';
 
 
 interface PageTabProps {
@@ -139,6 +140,10 @@ export default function PagesTab(param: PageTabProps) {
         setIsDeleteDialogOpen(false)
     }
 
+    function capitalize(str) {
+        return str.charAt(0).toUpperCase() + str.slice(1);
+    }
+
     return (
         <TabsContent value="pages">
             {!showActivePage ?
@@ -177,33 +182,15 @@ export default function PagesTab(param: PageTabProps) {
                             <h3 className="font-semibold">Your Pages</h3>
                             <AnimatePresence>
                                 {linkInBioState.pages.map((page, index) => (
-                                    <motion.div
+                                    <ListComponent
                                         key={page.id}
-                                        initial={{ opacity: 0, height: 0 }}
-                                        animate={{ opacity: 1, height: 'auto' }}
-                                        exit={{ opacity: 0, height: 0 }}
-                                        transition={{ duration: 0.2 }}
-                                    >
-                                        <Card className={'bg-gray-700'}>
-                                            <CardContent className="p-4">
-                                                <div className="flex items-center justify-between">
-                                                    <div className="flex items-center space-x-2">
-                                                        <div>
-                                                            <h3 className="font-medium">{page.name}</h3>
-                                                        </div>
-                                                    </div>
-                                                    <div className='flex'>
-
-                                                        <Eye onClick={() => { goToPage(page) }} className="h-4 w-4 ml-2 cursor-pointer text-sky-400/100" />
-                                                        <Pencil onClick={() => { handleEditClick(page) }} className="h-4 w-4 ml-2 cursor-pointer text-green-500" />
-                                                        <Trash2 onClick={() => { removeAPage(page) }} className="h-4 w-4 ml-2 cursor-pointer text-red-500" />
-
-                                                    </div>
-
-                                                </div>
-                                            </CardContent>
-                                        </Card>
-                                    </motion.div>
+                                        view={() => { goToPage(page) }}
+                                        edit={() => { handleEditClick(page) }}
+                                        deleteData={() => { removeAPage(page) }}
+                                        title={page.name}
+                                        data={page}
+                                        capitalize
+                                    />
                                 ))}
                             </AnimatePresence>
                         </div>

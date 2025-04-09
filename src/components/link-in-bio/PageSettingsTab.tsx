@@ -21,22 +21,8 @@ import {
     updateBanner,
     updateThemeColors,
     updateProfilePicture,
-    addPage,
-    updatePage,
-    removePage,
-    addSection,
-    updateSection,
-    removeSection,
-    addLink,
-    updateLink,
-    removeLink,
-    addSocialLink,
-    updateSocialLink,
-    removeSocialLink,
-    reorderSocialLinks
 } from "../../store/link-in-bio/linkInBioSlice"
 import { LoadingSpinner } from '../loader/Loader'
-import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
 import defaultImage from "../../../public/bioprofile.jpg"
 import ModalComponent from '../ModalComponent/ModalComponent'
 interface ImageType {
@@ -86,6 +72,11 @@ export default function PageSettingsTab(param: PageSettingsTabProps) {
     const profileInputRef = useRef<HTMLInputElement>(null)
     const bannerInputRef = useRef<HTMLInputElement>(null)
 
+    useEffect(() => {
+        if (!isDialogOpen) {
+            setHidePaletteCustomizeView(false)
+        }
+    }, [isDialogOpen])
     useEffect(() => {
         if (!linkInBioState.displayName) {
             setEditDisplayname(true)
@@ -151,9 +142,11 @@ export default function PageSettingsTab(param: PageSettingsTabProps) {
             setDisplayNameLoader(false)
         }
     }
+
     const closeDisplayNameEditMode = () => {
         setEditDisplayname(false)
     }
+
     const showDisplayNameInput = () => {
         setEditDisplayname(true)
     }
@@ -202,11 +195,11 @@ export default function PageSettingsTab(param: PageSettingsTabProps) {
                         </h2>
 
                     </div>
-                    {/* <div className='w-[20%] flex justify-end'>
-                        <div onClick={updateDisplayName}>
+                    <div className='w-[20%] flex justify-end'>
+                        <div className='cursor-pointer' onClick={showDisplayNameInput}>
                             <Pencil />
                         </div>
-                    </div> */}
+                    </div>
 
                 </div>
             </div>
@@ -282,40 +275,92 @@ export default function PageSettingsTab(param: PageSettingsTabProps) {
 
     const RenderTemplateSelector = () => {
         return (
+            // <div>
+            //     <Label className="mb-3 block">Layout</Label>
+            //     <RadioGroup
+            //         value={selectedTemplate}
+            //         onValueChange={(e) => setNewTemplate(e)}
+            //         className="grid grid-cols-3 gap-4"
+            //     >
+            //         {['classic', 'portrait', 'banner'].map((template) => (
+            //             <div key={template}>
+            //                 <RadioGroupItem
+            //                     value={template}
+            //                     id={template}
+            //                     className="peer sr-only"
+            //                 />
+            //                 <Label
+            //                     htmlFor={template}
+            //                     className="flex flex-col items-center justify-between rounded-lg border-2 border-muted bg-popover p-4 hover:bg-accent hover:text-accent-foreground peer-data-[state=checked]:border-primary [&:has([data-state=checked])]:border-primary"
+            //                 >
+            //                     <div className="mb-2 capitalize">{template}</div>
+            //                     <div className="w-full aspect-[1/2] rounded-lg bg-muted flex  justify-center p-2">
+            //                         {template === 'classic' && <div className="w-8 h-8 rounded-full bg-primary" />}
+            //                         {template === 'portrait' && <div className="w-full h-full bg-gradient-to-b from-transparent to-primary" />}
+            //                         {template === 'banner' && (
+            //                             <>
+            //                                 <div className="w-full h-1/4 bg-primary flex items-center  justify-center">
+            //                                     <div className="w-8 h-8 rounded-full bg-secondary " />
+            //                                 </div>
+            //                             </>
+            //                         )}
+            //                     </div>
+            //                 </Label>
+            //             </div>
+            //         ))}
+            //     </RadioGroup>
+            // </div>
+
             <div>
-                <Label className="mb-3 block">Layout</Label>
-                <RadioGroup
-                    value={selectedTemplate}
-                    onValueChange={(e) => setNewTemplate(e)}
-                    className="grid grid-cols-3 gap-4"
-                >
-                    {['classic', 'portrait', 'banner'].map((template) => (
-                        <div key={template}>
-                            <RadioGroupItem
-                                value={template}
-                                id={template}
-                                className="peer sr-only"
-                            />
-                            <Label
-                                htmlFor={template}
-                                className="flex flex-col items-center justify-between rounded-lg border-2 border-muted bg-popover p-4 hover:bg-accent hover:text-accent-foreground peer-data-[state=checked]:border-primary [&:has([data-state=checked])]:border-primary"
-                            >
-                                <div className="mb-2 capitalize">{template}</div>
-                                <div className="w-full aspect-[1/2] rounded-lg bg-muted flex  justify-center p-2">
-                                    {template === 'classic' && <div className="w-8 h-8 rounded-full bg-primary" />}
-                                    {template === 'portrait' && <div className="w-full h-full bg-gradient-to-b from-transparent to-primary" />}
-                                    {template === 'banner' && (
-                                        <>
-                                            <div className="w-full h-1/4 bg-primary flex items-center  justify-center">
-                                                <div className="w-8 h-8 rounded-full bg-secondary " />
-                                            </div>
-                                        </>
-                                    )}
+                <Label className="mb-3 block text-base sm:text-lg font-medium">Layout</Label>
+
+                {/* For very small screens, enable horizontal scrolling */}
+                <div className="overflow-x-auto hide-scrollbar pb-4 -mx-4 px-4 sm:overflow-visible sm:pb-0 sm:mx-0 sm:px-0">
+                    <div className="min-w-[400px] sm:min-w-0">
+                        <RadioGroup
+                            value={selectedTemplate}
+                            onValueChange={(e) => setNewTemplate(e)}
+                            className="grid grid-cols-3 gap-2 sm:gap-4"
+                        >
+                            {["classic", "portrait", "banner"].map((template) => (
+                                <div key={template} className="w-full  py-8">
+                                    <RadioGroupItem value={template} id={template} className="peer sr-only" />
+                                    <Label
+                                        htmlFor={template}
+                                        className="flex flex-col items-center justify-between rounded-lg border-2 border-muted bg-popover p-2 sm:p-4 hover:bg-accent hover:text-accent-foreground peer-data-[state=checked]:border-primary [&:has([data-state=checked])]:border-primary transition-all hover:scale-105 py-8"
+                                    >
+                                        <div className="mb-3 text-base sm:text-lg font-medium capitalize">{template}</div>
+
+                                        <div className="w-full h-32 sm:h-40 rounded-lg bg-muted flex justify-center p-2 shadow-sm">
+                                            {template === "classic" && (
+                                                <div className="flex flex-col items-center justify-center">
+                                                    <div className="w-12 h-12 sm:w-16 sm:h-16 rounded-full bg-primary mb-3" />
+                                                    <div className="w-3/4 h-3 bg-primary/50 rounded-full mb-2" />
+                                                    <div className="w-1/2 h-3 bg-primary/50 rounded-full" />
+                                                </div>
+                                            )}
+                                            {template === "portrait" && (
+                                                <div className="w-full h-full bg-gradient-to-b from-transparent to-primary rounded-lg flex items-end justify-center pb-4">
+                                                    <div className="w-3/4 h-3 bg-white/70 rounded-full mb-2" />
+                                                </div>
+                                            )}
+                                            {template === "banner" && (
+                                                <div className="w-full h-full flex flex-col">
+                                                    <div className="w-full h-1/3 bg-primary flex items-center justify-center rounded-t-lg"></div>
+                                                    <div className="flex-1 flex flex-col items-center">
+                                                        <div className="w-12 h-12 sm:w-16 sm:h-16 rounded-full bg-secondary -mt-6 border-4 border-muted" />
+                                                        <div className="w-3/4 h-3 bg-primary/50 rounded-full mt-4 mb-2" />
+                                                        <div className="w-1/2 h-3 bg-primary/50 rounded-full" />
+                                                    </div>
+                                                </div>
+                                            )}
+                                        </div>
+                                    </Label>
                                 </div>
-                            </Label>
-                        </div>
-                    ))}
-                </RadioGroup>
+                            ))}
+                        </RadioGroup>
+                    </div>
+                </div>
             </div>
         )
     }
@@ -399,14 +444,37 @@ export default function PageSettingsTab(param: PageSettingsTabProps) {
             <>
                 {selectedPalette ?
                     <div className='w-full'>
-                        <div className='grid grid-cols-3 w-full' onClick={() => showPaletteCustomizationModal(palette.name)}>
-                            <div style={{ background: palette.background }} className={`h-8 rounded-l-lg  `} />
-                            <div style={{ background: palette.text }} className={`h-8 `} />
-                            <div style={{ background: palette.accent }} className={`h-8 rounded-r-lg`} />
-                        </div>
-                        <div className='w-full mt-2 flex justify-center z-50' onClick={() => { shufflePalette([palette.background, palette.text, palette.accent], palette.name, selectedPalette.name) }}>
-                            <Shuffle size={18} className='cursor-pointer' />
-                        </div>
+                        {palette.name === selectedPalette.name ?
+                            <div
+                                className="relative grid grid-cols-3 w-full cursor-pointer"
+                                onClick={() => showPaletteCustomizationModal(palette.name)}
+                            >
+                                {/* Palette Colors */}
+                                <div style={{ background: palette.background }} className="h-8 rounded-l-lg" />
+                                <div style={{ background: palette.text }} className="h-8" />
+                                <div style={{ background: palette.accent }} className="h-8 rounded-r-lg" />
+
+                                {/* Overlay / Watermark */}
+                                <div className="absolute inset-0 flex items-center justify-center bg-black/10 text-red-500 text-xs font-semibold uppercase tracking-wide pointer-events-none">
+                                    chang colour
+                                    {/* Customize */}
+                                </div>
+                            </div>
+                            :
+                            <div className='grid grid-cols-3 w-full' onClick={() => showPaletteCustomizationModal(palette.name)}>
+                                <div style={{ background: palette.background }} className={`h-8 rounded-l-lg  `} />
+                                <div style={{ background: palette.text }} className={`h-8 `} />
+                                <div style={{ background: palette.accent }} className={`h-8 rounded-r-lg`} />
+                            </div>
+                        }
+
+                        {palette.name === selectedPalette.name ?
+                            <div className='w-full h-4 mt-2 flex justify-center z-50' onClick={() => { shufflePalette([palette.background, palette.text, palette.accent], palette.name, selectedPalette.name) }}>
+                                <span className='px-2'> Shuffle</span> <Shuffle size={18} className='cursor-pointer' />
+                            </div> :
+                            <div className='h-4 mt-2' />
+                        }
+
                     </div>
                     : null}
             </>
@@ -415,44 +483,90 @@ export default function PageSettingsTab(param: PageSettingsTabProps) {
 
         )
     }
+
+
+
+
+    // const renderColorPalettes = () => {
+
+    //     return (
+    //         <>
+    //             {colorPalettes && selectedPalette ?
+    //                 <div className='sm:pb-0 sm:mx-0 sm:px-0  '>
+    //                     <Label className="mb-3 block">Color Palette</Label>
+    //                     <RadioGroup
+    //                         value={selectedPalette.name}
+    //                         onValueChange={(value) => savePalette(colorPalettes.find(p => p.name === value) || colorPalettes[0])}
+    //                         className=" hide-scrollbar flex  justify-center sm:grid sm:grid-cols-3 sm:gap-4 overflow-x-auto sm:overflow-visible"
+    //                     >
+    //                         {colorPalettes.map((palette) => (
+    //                             <div key={palette.name} className=' '>
+    //                                 <RadioGroupItem
+    //                                     value={palette.name}
+    //                                     id={palette.name}
+    //                                     className="peer sr-only "
+    //                                 />
+    //                                 <Label
+    //                                     htmlFor={palette.name}
+    //                                     className="w-[150px]  flex flex-col items-center justify-between rounded-lg border-2 border-muted bg-popover p-4 hover:bg-accent hover:text-accent-foreground peer-data-[state=checked]:border-primary [&:has([data-state=checked])]:border-primary "
+    //                                 >
+    //                                     <div className="mb-2">{palette.name}</div>
+    //                                     {showPalette(palette)}
+
+
+    //                                 </Label>
+    //                             </div>
+    //                         ))}
+    //                     </RadioGroup>
+    //                 </div>
+    //                 : null}
+    //         </>
+
+    //     )
+    // }
 
     const renderColorPalettes = () => {
-
         return (
             <>
-                {colorPalettes && selectedPalette ?
-                    <div>
+                {colorPalettes && selectedPalette ? (
+                    <div className="sm:pb-0 sm:mx-0 sm:px-0 w-full overflow-hidden">
                         <Label className="mb-3 block">Color Palette</Label>
-                        <RadioGroup
-                            value={selectedPalette.name}
-                            onValueChange={(value) => savePalette(colorPalettes.find(p => p.name === value) || colorPalettes[0])}
-                            className="grid grid-cols-3 gap-4"
-                        >
-                            {colorPalettes.map((palette) => (
-                                <div key={palette.name}>
-                                    <RadioGroupItem
-                                        value={palette.name}
-                                        id={palette.name}
-                                        className="peer sr-only"
-                                    />
-                                    <Label
-                                        htmlFor={palette.name}
-                                        className="flex flex-col items-center justify-between rounded-lg border-2 border-muted bg-popover p-4 hover:bg-accent hover:text-accent-foreground peer-data-[state=checked]:border-primary [&:has([data-state=checked])]:border-primary"
-                                    >
-                                        <div className="mb-2">{palette.name}</div>
-                                        {showPalette(palette)}
+                        <div className="relative w-full">
+                            <RadioGroup
+                                value={selectedPalette.name}
+                                onValueChange={(value) =>
+                                    savePalette(
+                                        colorPalettes.find((p) => p.name === value) || colorPalettes[0]
+                                    )
+                                }
 
-
-                                    </Label>
-                                </div>
-                            ))}
-                        </RadioGroup>
+                                className="sm:grid sm:grid-cols-3 sm:gap-4  sm:overflow-visible hide-scrollbar flex gap-4 overflow-x-auto whitespace-nowrap w-full"
+                            >
+                                {colorPalettes.map((palette) => (
+                                    <div key={palette.name} className="shrink-0 w-[200px] sm:w-[150px]">
+                                        <RadioGroupItem
+                                            value={palette.name}
+                                            id={palette.name}
+                                            className="peer sr-only"
+                                        />
+                                        <Label
+                                            htmlFor={palette.name}
+                                            className="w-full flex flex-col items-center justify-between rounded-lg border-2 border-muted bg-popover p-4 hover:bg-accent hover:text-accent-foreground peer-data-[state=checked]:border-primary [&:has([data-state=checked])]:border-primary"
+                                        >
+                                            <div className="mb-2">{palette.name}</div>
+                                            {showPalette(palette)}
+                                        </Label>
+                                    </div>
+                                ))}
+                            </RadioGroup>
+                        </div>
                     </div>
-                    : null}
+                ) : null}
             </>
+        );
+    };
 
-        )
-    }
+
 
     const showPaletteCustomizationModal = (name) => {
         if (selectedPalette && selectedPalette.name === name) {
@@ -491,37 +605,6 @@ export default function PageSettingsTab(param: PageSettingsTabProps) {
         }
     }
 
-    // const displayPaletteUpdateDialog = () => {
-    //     if (selectedPalette) {
-    //         return (
-    //             <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-    //                 <DialogContent className="sm:max-w-[425px] bg-gray-800 text-white">
-    //                     <DialogHeader>
-    //                         <DialogTitle>
-    //                             <div className='flex w-full'>
-    //                                 {hidePaletteCustomizeView ?
-    //                                     <div onClick={() => setHidePaletteCustomizeView(false)}>
-    //                                         <ArrowLeft />
-    //                                     </div>
-    //                                     : null}
-
-    //                                 <div>
-    //                                     {selectedPalette.name}
-    //                                 </div>
-    //                             </div>
-
-    //                         </DialogTitle>
-    //                     </DialogHeader>
-    //                     {displayColorPickerSettings()}
-
-
-    //                 </DialogContent>
-    //             </Dialog>
-    //         )
-    //     }
-
-    // }
-
     const customColorModalHeader = () => {
         if (selectedPalette) {
             return (
@@ -529,7 +612,7 @@ export default function PageSettingsTab(param: PageSettingsTabProps) {
                 <div className='flex w-full'>
                     {hidePaletteCustomizeView ?
                         <div onClick={() => setHidePaletteCustomizeView(false)}>
-                            <ArrowLeft />
+                            <ArrowLeft className='cursor-pointer' />
                         </div>
                         : null}
 
@@ -701,10 +784,10 @@ export default function PageSettingsTab(param: PageSettingsTabProps) {
     return (
         <TabsContent value="page-settings">
             {displayPaletteUpdateDialog()}
-            <Card className={'bg-gray-800'}>
+            <Card className={'bg-gray-800 '}>
 
                 <CardContent>
-                    <div className="space-y-6">
+                    <div className="space-y-6 overflow-hidden ">
                         {RenderDisplayName()}
                         {RenderTemplateSelector()}
                         {renderColorPalettes()}

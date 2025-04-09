@@ -156,11 +156,6 @@ export default function GuestBioPage({ username }: { username: string }) {
 
     }
 
-    const handleLinkClick = (linkId: string) => {
-        // In a real app, you would send an API request to track the click
-        console.log(`Link clicked: ${linkId}`)
-    }
-
     // Styles for links
     const linkClasses = `block p-3 rounded-md border border-opacity-20 text-center hover:bg-opacity-10 transition-colors`
 
@@ -212,7 +207,7 @@ export default function GuestBioPage({ username }: { username: string }) {
                                 {profile.pages.map((page) => (
                                     <button
                                         key={page.id}
-                                        className={`w-full text-left p-3 rounded-md transition-colors ${page.id === activePage ? "font-bold" : ""
+                                        className={`w-full text-left p-3 rounded-md transition-colors capitalize ${page.id === activePage ? "font-bold" : ""
                                             }`}
                                         style={{
                                             color: themeColors.text,
@@ -353,7 +348,7 @@ export default function GuestBioPage({ username }: { username: string }) {
                                                 backgroundColor: `${themeColors.accent}30`,
                                             }}
                                         >
-                                            <Menu className="w-5 h-5" />
+                                            <Menu className="w-5 h-5 " />
                                         </button>
                                     )}
 
@@ -375,7 +370,7 @@ export default function GuestBioPage({ username }: { username: string }) {
                                     {/* Username and Social Icons */}
                                     <div className="text-center mt-2">
                                         <motion.h2
-                                            className="text-xl font-bold"
+                                            className="text-xl font-bold capitalize"
                                             initial={{ opacity: 0, y: -20 }}
                                             animate={{ opacity: 1, y: 0 }}
                                             transition={{ delay: 0.2 }}
@@ -389,7 +384,7 @@ export default function GuestBioPage({ username }: { username: string }) {
                                     {/* Current Page Name */}
                                     {currentPage && (
                                         <motion.h3
-                                            className="text-lg font-medium"
+                                            className="text-lg font-medium capitalize"
                                             initial={{ opacity: 0 }}
                                             animate={{ opacity: 1 }}
                                             style={{ color: themeColors.text }}
@@ -475,7 +470,7 @@ export default function GuestBioPage({ username }: { username: string }) {
 
                                         {/* Username and Social Icons */}
                                         <motion.h2
-                                            className="text-xl font-bold text-white mb-6"
+                                            className="text-xl font-bold text-white mb-6 capitalize"
                                             initial={{ opacity: 0, y: -10 }}
                                             animate={{ opacity: 1, y: 0 }}
                                         >
@@ -486,7 +481,7 @@ export default function GuestBioPage({ username }: { username: string }) {
                                         {/* Current Page Name */}
                                         {currentPage && (
                                             <motion.h3
-                                                className="text-lg font-medium text-white mt-2"
+                                                className="text-lg font-medium text-white mt-2 capitalize"
                                                 initial={{ opacity: 0 }}
                                                 animate={{ opacity: 1 }}
                                             >
@@ -580,14 +575,14 @@ export default function GuestBioPage({ username }: { username: string }) {
                                             </div>
 
                                             {/* Username and Social Icons */}
-                                            <h2 className="text-xl font-bold mt-4" style={{ color: themeColors.text }}>
+                                            <h2 className="text-xl font-bold mt-4 capitalize" style={{ color: themeColors.text }}>
                                                 {profile.displayName}
                                             </h2>
                                             <SocialIcons />
 
                                             {/* Current Page Name */}
                                             {currentPage && (
-                                                <h3 className="text-lg font-medium mt-2" style={{ color: themeColors.text }}>
+                                                <h3 className="text-lg font-medium mt-2 capitalize" style={{ color: themeColors.text }}>
                                                     {currentPage.name}
                                                 </h3>
                                             )}

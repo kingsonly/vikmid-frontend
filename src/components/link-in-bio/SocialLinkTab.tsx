@@ -1,13 +1,11 @@
 'use client'
-import { useState, useRef, useEffect } from 'react'
+import { useState } from 'react'
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
-import { Switch } from "@/components/ui/switch"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { AlertTriangle, Camera, Copy, ExternalLink, Instagram, Share2, Twitter, Facebook, LinkedinIcon as LinkedIn, YoutubeIcon as YouTube, TwitterIcon as TikTok, Twitch, Github, Dribbble, Plus, Trash2, ChartColumnBig, Pencil } from 'lucide-react'
+import { AlertTriangle, Camera, Copy, ExternalLink, Instagram, Share2, Twitter, Facebook, LinkedinIcon as LinkedIn, YoutubeIcon as YouTube, TwitterIcon as TikTok, Twitch, Github, Dribbble, Plus, Trash2, ChartColumnBig, Pencil, Calendar, Laptop, Smartphone, Globe, MousePointer } from 'lucide-react'
 import Image from 'next/image'
 import { motion, AnimatePresence } from 'framer-motion'
 import PageSettingsTab from './PageSettingsTab'
@@ -20,21 +18,17 @@ import {
     reorderSocialLinks
 } from "../../store/link-in-bio/linkInBioSlice"
 import { useApiCall } from '@/utils/useApiCall'
-import { LinkInBioState, SocialLink } from '../../store/link-in-bio/interface/linkInBioInterface';
+import { LinkInBioState, SocialLink, BusiestDayInterface, PlatformPercentageInterface, TopBrowserInterface } from '../../store/link-in-bio/interface/linkInBioInterface';
 import { getSocialPlatform, socialPlatforms } from '@/utils/helpers'
 import { LoadingSpinner } from '../loader/Loader'
-import {
-    Dialog,
-    DialogContent,
-    DialogDescription,
-    DialogHeader,
-    DialogTitle,
-    DialogFooter,
-} from "@/components/ui/dialog"
 import SocialEditModal from './SocialEditModal'
 import SocialLinkList from './SocialLinkList'
 import DragAndDropWrapper from '../dragAndDropWrapper/DragAndDropWrapper'
 import DeleteConfirm from '../DeleteConfirm/DeleteConfirm'
+import ModalComponent from '../ModalComponent/ModalComponent'
+import StatsTable from './StatsTable'
+import InfiniteScroll from 'react-infinite-scroller';
+import StatsNumberComponent from './StatsNumberComponent'
 
 
 interface SocialLinkTabProps {
@@ -49,9 +43,31 @@ export default function SocialLinkTab(param: SocialLinkTabProps) {
     const [isLoading, setIsLoading] = useState<boolean>(false)
     const [isEditModalOpen, setIsEditModalOpen] = useState(false)
     const [editingAccount, setEditingAccount] = useState<SocialLink | null>(null)
+    const [isViewStatsModalOpen, setIsViewStatsModalOpen] = useState(false)
     const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false)
     const [deleteLoader, setDeleteLoader] = useState(false)
+    const [viewStatsLoader, setViewStatsLoader] = useState(false)
     const [deleteAccount, setDeleteAccount] = useState<SocialLink | null>(null)
+    const [next, setNext] = useState<string | null>(null)
+    const [statsData, setStatsData] = useState<any[]>([])
+    const [total, setTotal] = useState<number>(0)
+    const [platformPercentage, setPlatformPercentage] = useState<PlatformPercentageInterface>({
+        mobile: 0,
+        desktop: 0,
+    })
+    const [topBrowser, setTopBrowser] = useState<TopBrowserInterface>({
+        name: "",
+        count: 0,
+        percentage: 0,
+    }
+    )
+    const [busiestDay, setBusiestDay] = useState<BusiestDayInterface>(
+        {
+            day: "",
+            count: 0,
+            percentage: 0,
+        }
+    )
 
     const addSocialAccount = async () => {
         if (newSocialAccount.platform && newSocialAccount.username) {
@@ -90,9 +106,7 @@ export default function SocialLinkTab(param: SocialLinkTabProps) {
         }
     }
 
-    const viewStats = (socialLink) => {
 
-    }
 
     const deleteSocialLink = (socialLink) => {
         setDeleteAccount(socialLink)
@@ -102,6 +116,42 @@ export default function SocialLinkTab(param: SocialLinkTabProps) {
     const handleEditClick = (socialLink: any) => {
         setEditingAccount(socialLink)
         setIsEditModalOpen(true)
+    }
+    const handleViewStatsClick = async (socialLink: any) => {
+        if (!socialLink) return
+
+
+        setViewStatsLoader(true)
+        setIsViewStatsModalOpen(true)
+        setNext(null)
+        const statistics = fetchStatistics(socialLink.id)
+        if (!statistics) {
+            setViewStatsLoader(false)
+            setIsViewStatsModalOpen(false)
+            return
+        }
+
+        try {
+
+            const response = await apiCall({
+                endpoint: `/social-link-stats/get-all-social-links-stats-by-link-id/${socialLink.id}`,
+                method: "get",
+                "showToast": true,
+            }
+            );
+            if (response) {
+                setViewStatsLoader(false)
+                setStatsData(response.data.data)
+                if (response.data.links.next) {
+                    setNext(response.data.links.next)
+                }
+            }
+
+        } catch (error) {
+            console.error("Error fetching stats:", error);
+            setViewStatsLoader(true)
+        }
+
     }
 
     const handleSaveUpdate = async (account: SocialLink) => {
@@ -135,6 +185,7 @@ export default function SocialLinkTab(param: SocialLinkTabProps) {
         }
     }
 
+
     const moveSocialAccount = async (dragIndex: number, hoverIndex: number) => {
         if (!linkInBioState) return
         if (!linkInBioState.socialLinks) return
@@ -163,6 +214,66 @@ export default function SocialLinkTab(param: SocialLinkTabProps) {
 
         }
         return socialLinks
+    }
+
+    const fetchMoreData = async () => {
+        if (viewStatsLoader) {
+            return;
+        }
+        if (!next) return
+        setViewStatsLoader(true)
+
+        try {
+
+            const response = await apiCall({
+                endpoint: `${next}`,
+                method: "get",
+                "showToast": false,
+            }
+            );
+            if (response) {
+
+                setStatsData(prev => [...prev, ...response.data.data]);
+                if (response.data.links.next) {
+                    setNext(response.data.links.next)
+                } else {
+                    setNext(null)
+                }
+                setViewStatsLoader(false)
+            }
+
+        } catch (error) {
+            console.error("Error fetching stats:", error);
+            setViewStatsLoader(false)
+
+        }
+
+        console.log("more")
+    }
+
+    const fetchStatistics = async (socialLinkId: string) => {
+        try {
+
+            const response = await apiCall({
+                endpoint: `/social-link-stats/analyze/${socialLinkId}`,
+                method: "get",
+                "showToast": false,
+            }
+            );
+            if (response) {
+                setTotal(response.data.total)
+                setPlatformPercentage(response.data.platformPercentage)
+                setTopBrowser(response.data.topBrowser)
+                setBusiestDay(response.data.busiestDay)
+                return true
+            }
+
+        } catch (error) {
+            return false
+
+        }
+
+        console.log("more")
     }
 
     return (
@@ -215,6 +326,7 @@ export default function SocialLinkTab(param: SocialLinkTabProps) {
                                         onMove={moveSocialAccount}
                                         onDelete={() => deleteSocialLink(account)}
                                         handleEditClick={() => handleEditClick(account)}
+                                        handleViewStatsClick={() => handleViewStatsClick(account)}
                                     />
 
                                 )) : null
@@ -231,6 +343,33 @@ export default function SocialLinkTab(param: SocialLinkTabProps) {
                 account={editingAccount}
                 onSave={handleSaveUpdate}
             />
+            <ModalComponent
+                dialogDisplay={isViewStatsModalOpen}
+                dialogDisplaySetter={() => setIsViewStatsModalOpen(false)}
+                title={"Stats"}
+                showInSide={true}
+            >
+                <StatsNumberComponent
+                    total={total}
+                    platformPercentage={platformPercentage}
+                    topBrowser={topBrowser}
+                    busiestDay={busiestDay}
+                />
+
+                <InfiniteScroll
+                    pageStart={1}
+                    loadMore={fetchMoreData}
+                    hasMore={viewStatsLoader == false && next ? true : false}
+
+                    useWindow={false}
+
+                >
+                    <StatsTable stats={statsData} />
+                </InfiniteScroll>
+
+
+
+            </ModalComponent>
             <DeleteConfirm
                 dialogDisplay={isDeleteDialogOpen}
                 dialogDisplaySetter={() => setIsDeleteDialogOpen(false)}

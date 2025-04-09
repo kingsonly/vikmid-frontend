@@ -17,29 +17,29 @@ export default function GuestSocialLink({ socialLink, themeColors, Icon }: { soc
     const { apiCall } = useApiCall();
     const [copied, setCopied] = useState(false);
 
-    const handleLinkClick = async (e: React.MouseEvent<HTMLAnchorElement>, link: SocialLink) => {
+    const handleLinkClick = async (e: React.MouseEvent<HTMLAnchorElement>, socialLink: SocialLink) => {
         e.preventDefault() // Prevent default navigation temporarily
 
         // Collect all relevant bio data
         const data = {
-            linkId: link.id,
-            stats: JSON.stringify({
+            socialLinkId: socialLink.id,
+            stats: {
                 referrer: document.referrer || "direct",
                 userAgent: navigator.userAgent,
                 viewportWidth: window.innerWidth,
                 viewportHeight: window.innerHeight,
                 language: navigator.language,
                 platform: navigator.platform,
-            })
+            }
         };
 
         const navigateToLink = () => {
-            window.open(link.link, "_blank", "noopener,noreferrer")
+            window.open(socialLink.link, "_blank", "noopener,noreferrer")
         };
 
         try {
             const createLinkStatus = await apiCall({
-                endpoint: `/link-stats/create`,
+                endpoint: `/social-link-stats/create`,
                 method: "post",
                 data: data,
                 "showToast": false,

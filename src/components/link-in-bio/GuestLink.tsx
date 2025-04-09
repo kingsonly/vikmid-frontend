@@ -23,14 +23,14 @@ export default function GuestLink({ link, themeColors, linkIndex }: { link: Link
         // Collect all relevant bio data
         const data = {
             linkId: link.id,
-            stats: JSON.stringify({
+            stats: {
                 referrer: document.referrer || "direct",
                 userAgent: navigator.userAgent,
                 viewportWidth: window.innerWidth,
                 viewportHeight: window.innerHeight,
                 language: navigator.language,
                 platform: navigator.platform,
-            })
+            }
         };
 
         const navigateToLink = () => {
