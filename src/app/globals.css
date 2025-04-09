@@ -1,7 +1,28 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+.responsive .react-colorful {
+  width: auto;
+}
+@keyframes shine {
+  0% {
+    transform: translateX(-100%);
+    opacity: 0.3;
+  }
 
+  50% {
+    opacity: 0.6;
+  }
+
+  100% {
+    transform: translateX(100%);
+    opacity: 0.3;
+  }
+}
+
+.animate-shine {
+  animation: shine 2s infinite linear;
+}
 @layer base {
   :root {
     --background: 0 0% 100%;
@@ -66,4 +87,19 @@
   body {
     @apply bg-background text-foreground;
   }
+}
+
+.hide-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+/* Hide scrollbar for Firefox */
+.hide-scrollbar {
+  scrollbar-width: none;
+  width: 100%;
+}
+
+/* Hide scrollbar for Edge & IE */
+.hide-scrollbar {
+  -ms-overflow-style: none;
 }
