@@ -62,8 +62,11 @@ async function getBioProfile(username: string) {
 //     return <GuestBioPage profile={profile} />
 // }
 
-export default async function UserBioPage({ params }: { params: { username: string } }) {
+// export default async function UserBioPage({ params }: { params: { username: string } }) {
 
-    return <GuestBioPage username={params.username} />;
+//     return <GuestBioPage username={params.username} />;
+// }
+
+export default async function UserBioPage() {
+    return <div>f</div>
 }
-
