@@ -12,7 +12,7 @@ import Link from "next/link"
 import GuestSection from "./GuestSection"
 import GuestLink from "./GuestLink"
 import GuestSocialLink from "./GuesSocialLink"
-import defaultImage from "../../../public/bioprofile.jpg"
+
 // Using the Redux types provided
 interface LinkStats {
     id: string
@@ -325,7 +325,7 @@ export default function LinkInBioTemplate({
                                     transition={{ type: "spring", stiffness: 260, damping: 20 }}
                                 >
                                     <Image
-                                        src={profileImage.url || defaultImage}
+                                        src={profileImage.url || "/public/bioprofile.jpg"}
                                         alt={safeState.displayName}
                                         fill
                                         className="rounded-full object-cover"
@@ -400,7 +400,7 @@ export default function LinkInBioTemplate({
                         >
                             {/* Background Image */}
                             <Image
-                                src={profileImage.url || defaultImage}
+                                src={profileImage.url || "/public/bioprofile.jpg"}
                                 alt={safeState.displayName}
                                 width={100} // Makes it responsive
                                 height={100}
@@ -501,7 +501,7 @@ export default function LinkInBioTemplate({
                                 {/* Banner Image */}
                                 <div className="relative h-40 ">
                                     <Image
-                                        src={bannerImage.url || defaultImage}
+                                        src={bannerImage.url || "/public/bioprofile.jpg"}
                                         alt={safeState.displayName}
                                         fill
                                         className="object-cover w-[100%]"
@@ -532,7 +532,7 @@ export default function LinkInBioTemplate({
                                             style={{ borderColor: themeColors.background }}
                                         >
                                             <Image
-                                                src={profileImage.url || defaultImage}
+                                                src={profileImage.url || "/public/bioprofile.jpg"}
                                                 alt={safeState.displayName}
                                                 fill
                                                 className="object-cover"
