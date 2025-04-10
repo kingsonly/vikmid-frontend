@@ -4,6 +4,8 @@ import axios from "axios"
 //import { useApiCall } from "@/utils/useApiCall"
 import type { Metadata } from "next"
 import { notFound } from "next/navigation"
+import { UsernameDynamicPageInterface } from "./unsernameInterface";
+import { use } from "react";
 
 let loader = true;
 async function getBioProfile(username: string) {
@@ -24,33 +26,34 @@ async function getBioProfile(username: string) {
     return null
 
 }
-// Generate metadata for the page
-// export async function generateMetadata({ params }: { params: { username: string } }): Promise<Metadata> {
-//     const profile = await getBioProfile(params.username)
+//Generate metadata for the page
+export async function generateMetadata({ params }: UsernameDynamicPageInterface): Promise<Metadata> {
+    const { username } = await params
+    const profile = await getBioProfile(username)
 
-//     if (!profile) {
-//         return {
-//             title: "Profile Not Found",
-//             description: "The requested profile could not be found.",
-//         }
-//     }
+    if (!profile) {
+        return {
+            title: "Profile Not Found",
+            description: "The requested profile could not be found.",
+        }
+    }
 
-//     return {
-//         title: `${profile.displayName} | VIKMID Bio`,
-//         description: `Check out ${profile.displayName}'s links and content`,
-//         openGraph: {
-//             title: `${profile.displayName} | VIKMID Bio`,
-//             description: `Check out ${profile.displayName}'s links and content`,
-//             images: [profile.profilePicture],
-//         },
-//         twitter: {
-//             card: "summary_large_image",
-//             title: `${profile.displayName} | VIKMID Bio`,
-//             description: `Check out ${profile.displayName}'s links and content`,
-//             images: [profile.profilePicture],
-//         },
-//     }
-// }
+    return {
+        title: `${profile.displayName} | VIKMID Bio`,
+        description: `Check out ${profile.displayName}'s links and content`,
+        openGraph: {
+            title: `${profile.displayName} | VIKMID Bio`,
+            description: `Check out ${profile.displayName}'s links and content`,
+            images: [profile.profilePicture],
+        },
+        twitter: {
+            card: "summary_large_image",
+            title: `${profile.displayName} | VIKMID Bio`,
+            description: `Check out ${profile.displayName}'s links and content`,
+            images: [profile.profilePicture],
+        },
+    }
+}
 
 // export default async function UserBioPage({ params }: { params: { username: string } }) {
 //     const profile = await getBioProfile(params.username)
@@ -62,11 +65,13 @@ async function getBioProfile(username: string) {
 //     return <GuestBioPage profile={profile} />
 // }
 
+export default async function UserBioPage({ params }: UsernameDynamicPageInterface) {
+    const { username } = await params
+    return <GuestBioPage username={username} />;
+}
+
+
 // export default async function UserBioPage({ params }: { params: { username: string } }) {
 
 //     return <GuestBioPage username={params.username} />;
 // }
-
-export default async function UserBioPage() {
-    return <div>f</div>
-}

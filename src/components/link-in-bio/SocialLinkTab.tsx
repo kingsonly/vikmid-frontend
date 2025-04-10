@@ -29,6 +29,7 @@ import ModalComponent from '../ModalComponent/ModalComponent'
 import StatsTable from './StatsTable'
 import InfiniteScroll from 'react-infinite-scroller';
 import StatsNumberComponent from './StatsNumberComponent'
+import { DragDropContext, Droppable } from '@hello-pangea/dnd'
 
 
 interface SocialLinkTabProps {
@@ -185,37 +186,6 @@ export default function SocialLinkTab(param: SocialLinkTabProps) {
         }
     }
 
-
-    const moveSocialAccount = async (dragIndex: number, hoverIndex: number) => {
-        if (!linkInBioState) return
-        if (!linkInBioState.socialLinks) return
-        const reorderSocialLink: string[] = []
-        const socialLinks = [...linkInBioState.socialLinks]
-        const [draggedAccount] = socialLinks.splice(dragIndex, 1)
-        socialLinks.splice(hoverIndex, 0, draggedAccount)
-        // update the server 
-        // update redux
-        socialLinks.map((value) => reorderSocialLink.push(value.id))
-        dispatch(reorderSocialLinks(reorderSocialLink))
-        try {
-            const response = await apiCall({
-                endpoint: `/social-link/reorder`,
-                method: "put",
-                "showToast": true,
-                data: { socialLinksIds: reorderSocialLink },
-                successMessage: `Social link reordered successfully `,
-            }
-            );
-            if (response) {
-                dispatch(reorderSocialLinks(reorderSocialLink))
-            }
-        } catch (error) {
-            console.error("Error while reordering social link:", error);
-
-        }
-        return socialLinks
-    }
-
     const fetchMoreData = async () => {
         if (viewStatsLoader) {
             return;
@@ -276,6 +246,47 @@ export default function SocialLinkTab(param: SocialLinkTabProps) {
         console.log("more")
     }
 
+    const reorderAllSocialLink = async (result) => {
+        // Drop outside the list
+        if (!result.destination) {
+            return
+        }
+
+        // Dropped in the same position
+        if (result.destination.index === result.source.index) {
+            return
+        }
+
+
+        if (!linkInBioState) return
+        if (!linkInBioState.socialLinks) return
+        const reorderSocialLink: string[] = []
+        const socialLinks = [...linkInBioState.socialLinks]
+        const [draggedAccount] = socialLinks.splice(result.source.index, 1)
+        socialLinks.splice(result.destination.index, 0, draggedAccount)
+        // update the server 
+        // update redux
+        socialLinks.map((value) => reorderSocialLink.push(value.id))
+        dispatch(reorderSocialLinks(reorderSocialLink))
+        try {
+            const response = await apiCall({
+                endpoint: `/social-link/reorder`,
+                method: "put",
+                "showToast": true,
+                data: { socialLinksIds: reorderSocialLink },
+                successMessage: `Social link reordered successfully `,
+            }
+            );
+            if (response) {
+                dispatch(reorderSocialLinks(reorderSocialLink))
+            }
+        } catch (error) {
+            console.error("Error while reordering social link:", error);
+
+        }
+        return socialLinks
+    }
+
     return (
         <TabsContent value="social">
             <Card className={'bg-gray-800'}>
@@ -316,23 +327,38 @@ export default function SocialLinkTab(param: SocialLinkTabProps) {
                     </div>
                     <div className="mt-6 space-y-4">
                         <h3 className="font-semibold">Your Social Accounts</h3>
-                        <DragAndDropWrapper>
-                            <AnimatePresence>
-                                {linkInBioState && linkInBioState.socialLinks ? linkInBioState.socialLinks.map((account, index) => (
-                                    <SocialLinkList
-                                        key={account.id}
-                                        account={account}
-                                        index={index}
-                                        onMove={moveSocialAccount}
-                                        onDelete={() => deleteSocialLink(account)}
-                                        handleEditClick={() => handleEditClick(account)}
-                                        handleViewStatsClick={() => handleViewStatsClick(account)}
-                                    />
+                        <DragDropContext onDragEnd={reorderAllSocialLink}>
+                            <Droppable droppableId="social-link-list"
+                                isDropDisabled={false}
+                                isCombineEnabled={false}
+                                ignoreContainerClipping={false}
+                                direction="vertical"
+                            >
+                                {(provided, snapshot) => (
+                                    <div
+                                        ref={provided.innerRef}
+                                        {...provided.droppableProps}
+                                    >
+                                        <AnimatePresence>
+                                            {linkInBioState && linkInBioState.socialLinks ? linkInBioState.socialLinks.map((account, index) => (
+                                                <SocialLinkList
+                                                    key={account.id}
+                                                    account={account}
+                                                    index={index}
+                                                    onDelete={() => deleteSocialLink(account)}
+                                                    handleEditClick={() => handleEditClick(account)}
+                                                    handleViewStatsClick={() => handleViewStatsClick(account)}
+                                                />
 
-                                )) : null
-                                }
-                            </AnimatePresence>
-                        </DragAndDropWrapper>
+                                            )) : null
+                                            }
+                                        </AnimatePresence>
+                                        {provided.placeholder}
+                                    </div>
+                                )}
+                            </Droppable>
+                        </DragDropContext>
+
 
                     </div>
                 </CardContent>

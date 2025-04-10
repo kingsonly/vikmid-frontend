@@ -14,6 +14,7 @@ import { AppDispatch } from '../../store';
 import {
     addPage,
     removePage,
+    reorderPages,
     updatePage,
 } from "../../store/link-in-bio/linkInBioSlice"
 
@@ -31,6 +32,8 @@ import PageEditModal from './PageEditModal';
 import PageSection from './PageSection';
 import DeleteConfirm from '../DeleteConfirm/DeleteConfirm';
 import ListComponent from '../ListComponent/ListComponent';
+import { DragDropContext, Droppable } from '@hello-pangea/dnd';
+import { scrollToTop } from '@/utils/helpers';
 
 
 interface PageTabProps {
@@ -51,6 +54,24 @@ export default function PagesTab(param: PageTabProps) {
     const [deleteLoader, setDeleteLoader] = useState(false)
     const [deletePage, setDeletePage] = useState<Page | null>(null)
     const [showActivePage, setShowActivePage] = useState(false)
+
+    useEffect(() => {
+        if (showActivePage) {
+            // Double requestAnimationFrame ensures DOM is fully updated
+            requestAnimationFrame(() => {
+                requestAnimationFrame(() => {
+                    window.scrollTo({
+                        top: 0,
+                        behavior: "smooth",
+                    })
+
+                    // Fallback method
+                    document.body.scrollTop = 0
+                    document.documentElement.scrollTop = 0
+                })
+            })
+        }
+    }, [showActivePage])
 
     const addNewPage = async () => {
         if (!newPageTitle.trim()) {
@@ -131,6 +152,20 @@ export default function PagesTab(param: PageTabProps) {
     const goToPage = (page: Page) => {
         setActivePage(page)
         setShowActivePage(true)
+        requestAnimationFrame(() => {
+            requestAnimationFrame(() => {
+                window.scrollTo({
+                    top: 0,
+                    behavior: "smooth",
+                })
+
+                // Fallback method if the above doesn't work
+                document.body.scrollTop = 0 // For Safari
+                document.documentElement.scrollTop = 0 // For Chrome, Firefox, IE and Opera
+            })
+        })
+
+
     }
     const backToPage = () => {
         setActivePage(null)
@@ -142,6 +177,46 @@ export default function PagesTab(param: PageTabProps) {
 
     function capitalize(str) {
         return str.charAt(0).toUpperCase() + str.slice(1);
+    }
+
+    const reorderPage = async (result) => {
+        // Drop outside the list
+        if (!result.destination) {
+            return
+        }
+
+        // Dropped in the same position
+        if (result.destination.index === result.source.index) {
+            return
+        }
+
+
+        if (!linkInBioState) return
+        if (!linkInBioState.pages) return
+        const reorderPage: string[] = []
+        const pages = [...linkInBioState.pages]
+        const [draggedPage] = pages.splice(result.source.index, 1)
+        pages.splice(result.destination.index, 0, draggedPage)
+        // update the server 
+        // update redux
+        pages.map((value) => reorderPage.push(value.id))
+        dispatch(reorderPages(reorderPage))
+        try {
+            const response = await apiCall({
+                endpoint: `/pages/reorder`,
+                method: "put",
+                "showToast": true,
+                data: { pageIds: reorderPage },
+                successMessage: `Page reordered successfully `,
+            }
+            );
+            if (response) {
+                dispatch(reorderPages(reorderPage))
+            }
+        } catch (error) {
+            console.error("Error while reordering Page:", error);
+
+        }
     }
 
     return (
@@ -180,19 +255,37 @@ export default function PagesTab(param: PageTabProps) {
 
                         <div className="mt-6 space-y-4">
                             <h3 className="font-semibold">Your Pages</h3>
-                            <AnimatePresence>
-                                {linkInBioState.pages.map((page, index) => (
-                                    <ListComponent
-                                        key={page.id}
-                                        view={() => { goToPage(page) }}
-                                        edit={() => { handleEditClick(page) }}
-                                        deleteData={() => { removeAPage(page) }}
-                                        title={page.name}
-                                        data={page}
-                                        capitalize
-                                    />
-                                ))}
-                            </AnimatePresence>
+                            <DragDropContext onDragEnd={reorderPage}>
+                                <Droppable droppableId="social-link-list"
+                                    isDropDisabled={false}
+                                    isCombineEnabled={false}
+                                    ignoreContainerClipping={false}
+                                    direction="vertical"
+                                >
+                                    {(provided, snapshot) => (
+                                        <div
+                                            ref={provided.innerRef}
+                                            {...provided.droppableProps}
+                                        >
+                                            <AnimatePresence>
+                                                {linkInBioState.pages.map((page, index) => (
+                                                    <ListComponent
+                                                        key={page.id}
+                                                        view={() => { goToPage(page) }}
+                                                        edit={() => { handleEditClick(page) }}
+                                                        deleteData={() => { removeAPage(page) }}
+                                                        title={page.name}
+                                                        data={page}
+                                                        capitalize
+                                                        index={index}
+                                                    />
+                                                ))}
+                                            </AnimatePresence>
+                                            {provided.placeholder}
+                                        </div>
+                                    )}
+                                </Droppable>
+                            </DragDropContext>
                         </div>
                     </CardContent>
                 </Card>

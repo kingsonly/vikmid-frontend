@@ -28,11 +28,11 @@ export default function DeleteConfirm({ dialogDisplay, dialogDisplaySetter, hand
                     </DialogDescription>
                 </DialogHeader>
                 <DialogFooter>
-                    <Button variant="outline" onClick={dialogDisplaySetter}>
+                    <Button variant="outline" onClick={dialogDisplaySetter} className=" text-white bg-gradient-to-r from-pink-500 to-purple-500 hover:from-pink-600 hover:to-purple-600">
                         Cancel
                     </Button>
                     {!loader ?
-                        <Button variant="destructive" onClick={handleDelete}>
+                        <Button variant="destructive" onClick={handleDelete} className="mb-2 sm:mb-0">
                             Delete
                         </Button>
                         : <LoadingSpinner />
