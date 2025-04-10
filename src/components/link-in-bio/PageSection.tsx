@@ -10,7 +10,7 @@ import { ChevronDown, ChevronLeft, ChevronUp, Pencil, Plus, PlusIcon, Save, Tras
 import { useApiCall } from "@/utils/useApiCall"
 import { useDispatch } from "react-redux"
 import type { AppDispatch } from "../../store"
-import { addSection, removeLink, removeSection, updateSection } from "../../store/link-in-bio/linkInBioSlice"
+import { addSection, removeLink, removeSection, reorderLinks, reorderSections, updateSection } from "../../store/link-in-bio/linkInBioSlice"
 import InfiniteScroll from 'react-infinite-scroller';
 import { LoadingSpinner } from "../loader/Loader"
 import LinkCreationModal from "./LinkCreationModal"
@@ -22,6 +22,7 @@ import ModalComponent from "../ModalComponent/ModalComponent"
 import StatsNumberComponent from "./StatsNumberComponent"
 import StatsTable from "./StatsTable"
 import DragAndDropWrapper from "../dragAndDropWrapper/DragAndDropWrapper"
+import { DragDropContext, Draggable, Droppable } from "@hello-pangea/dnd"
 
 interface PageTabProps {
     linkInBioState: LinkInBioState
@@ -182,35 +183,130 @@ export default function PageSection(param: PageTabProps) {
         setActiveSection(section)
     }
 
-    const moveSocialAccount = async (dragIndex: number, hoverIndex: number) => {
-        console.log(dragIndex)
-        // if (!linkInBioState) return
-        // if (!linkInBioState.socialLinks) return
-        // const reorderSocialLink: string[] = []
-        // const socialLinks = [...linkInBioState.socialLinks]
-        // const [draggedAccount] = socialLinks.splice(dragIndex, 1)
-        // socialLinks.splice(hoverIndex, 0, draggedAccount)
-        // // update the server 
-        // // update redux
-        // socialLinks.map((value) => reorderSocialLink.push(value.id))
-        // dispatch(reorderSocialLinks(reorderSocialLink))
-        // try {
-        //     const response = await apiCall({
-        //         endpoint: `/social-link/reorder`,
-        //         method: "put",
-        //         "showToast": true,
-        //         data: { socialLinksIds: reorderSocialLink },
-        //         successMessage: `Social link reordered successfully `,
-        //     }
-        //     );
-        //     if (response) {
-        //         dispatch(reorderSocialLinks(reorderSocialLink))
-        //     }
-        // } catch (error) {
-        //     console.error("Error while reordering social link:", error);
+    const reOrderLink = async (result) => {
+        // Drop outside the list or no destination
+        if (!result.destination) {
+            return
+        }
 
-        // }
-        // return socialLinks
+        const { source, destination, draggableId } = result
+
+        // If dropped in the same position, do nothing
+        if (source.droppableId === destination.droppableId && source.index === destination.index) {
+            return
+        }
+
+        // Get the section ID from the droppableId
+        const sectionId = source.droppableId
+
+        // Find the section in the current page
+        if (!activePage) return
+        const activePageData = findPage(activePage.id)
+        if (!activePageData) return
+
+        const section = activePageData.sections?.find((s) => s.id === sectionId)
+        if (!section || !section.links) return
+
+        // Create a new array of links with the updated order
+        const newLinks = Array.from(section.links)
+        const [movedLink] = newLinks.splice(source.index, 1)
+        newLinks.splice(destination.index, 0, movedLink)
+        const reorderLink: string[] = []
+        newLinks.map((value: any) => reorderLink.push(value.id))
+        // Update the order property of each link
+        const linksWithUpdatedOrder = newLinks.map((link, index) => ({
+            link,
+            order: index + 1,
+        }))
+
+        // Dispatch action to update the links in Redux
+        dispatch(
+            reorderLinks({
+                // pageId: activePage.id,
+                sectionId: sectionId,
+                linkIds: reorderLink,
+            }),
+        )
+
+        try {
+
+            const response = await apiCall({
+                endpoint: `/links/reorder`,
+                method: "put",
+                data: { linksIds: reorderLink },
+                showToast: false,
+            })
+            if (response) {
+                dispatch(
+                    reorderLinks({
+                        // pageId: activePage.id,
+                        sectionId: sectionId,
+                        linkIds: reorderLink,
+                    }),
+                )
+            }
+        } catch (error) {
+            console.error("Error updating link order:", error)
+        }
+    }
+    const reOrderPageSection = async (result) => {
+        // Drop outside the list or no destination
+        if (!result.destination) {
+            return
+        }
+
+        const { source, destination, draggableId } = result
+
+        // If dropped in the same position, do nothing
+        if (source.droppableId === destination.droppableId && source.index === destination.index) {
+            return
+        }
+
+        // Get the section ID from the droppableId
+        const sectionId = source.droppableId
+
+        // Find the section in the current page
+        if (!activePage) return
+        const activePageData = findPage(activePage.id)
+        if (!activePageData) return
+
+        const sections = activePageData.sections
+        if (!sections) return
+
+        // Create a new array of links with the updated order
+        const newSection = Array.from(sections)
+        const [movedSection] = newSection.splice(source.index, 1)
+        newSection.splice(destination.index, 0, movedSection)
+        const reorderSection: string[] = []
+        newSection.map((value: any) => reorderSection.push(value.id))
+
+
+        dispatch(
+            reorderSections({
+                pageId: activePage.id,
+                sectionIds: reorderSection,
+            }),
+        )
+
+        try {
+
+            const response = await apiCall({
+                endpoint: `/page-section/reorder`,
+                method: "put",
+                data: { pageSectionIds: reorderSection },
+                showToast: false,
+            })
+            if (response) {
+                dispatch(
+                    reorderSections({
+                        pageId: activePage.id,
+                        sectionIds: reorderSection,
+                    }),
+                )
+            }
+        } catch (error) {
+            console.error("Error updating page section order:", error)
+        }
     }
 
     const renderPageSection = () => {
@@ -220,187 +316,234 @@ export default function PageSection(param: PageTabProps) {
         if (!activePageAndSections.sections) return
 
         return (
-            <div className="space-y-4">
-                {activePageAndSections.sections.map((section, index) => (
-                    <motion.div
-                        key={section.id}
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        exit={{ opacity: 0, y: -20 }}
-                        transition={{ duration: 0.3 }}
-                        className="overflow-hidden"
-                    >
-                        <Card className="bg-gray-700 border-gray-600 hover:border-gray-500 transition-colors">
-                            <div
-                                className="p-4 flex justify-between items-center cursor-pointer"
-                                onClick={() => toggleSection(section.id)}
-                            >
-                                {renderEditSectionTitle && index == activeIndex ? (
-                                    <div className="flex justify-between items-center w-full">
-                                        <div className="flex-1 mr-4">
-                                            <Input
-                                                id="title"
-                                                ref={displayTitleRef}
-                                                value={title ? title : ""}
-                                                onClick={(e) => {
-                                                    e.stopPropagation()
+            <DragDropContext onDragEnd={reOrderPageSection}>
+                <Droppable droppableId="page-section-list"
+                    isDropDisabled={false}
+                    isCombineEnabled={false}
+                    ignoreContainerClipping={false}
+                    direction="vertical"
+                >
+                    {(provided, snapshot) => (
+                        <div className="space-y-4"
+                            ref={provided.innerRef}
+                            {...provided.droppableProps}
+                        >
+                            {activePageAndSections && activePageAndSections.sections && activePageAndSections.sections.map((section, index) => (
+                                <motion.div
+                                    key={section.id}
+                                    initial={{ opacity: 0, y: 20 }}
+                                    animate={{ opacity: 1, y: 0 }}
+                                    exit={{ opacity: 0, y: -20 }}
+                                    transition={{ duration: 0.3 }}
+                                    className="overflow-hidden"
+                                >
+                                    <Draggable draggableId={section.id} index={index}>
+                                        {(provided, snapshot) => (
+                                            <Card
+                                                ref={provided.innerRef}
+                                                {...provided.draggableProps}
+                                                {...provided.dragHandleProps}
+                                                style={{
+                                                    userSelect: "none",
+                                                    ...provided.draggableProps.style,
                                                 }}
-                                                onChange={(e) => setTitle(e.target.value)}
-                                                className="bg-gray-600 border-gray-500 text-white"
-                                            />
-                                        </div>
-                                        <div className="flex items-center space-x-2">
-                                            <Button
-                                                size="icon"
-                                                variant="ghost"
-                                                className="h-8 w-8 rounded-full bg-green-500/10 hover:bg-green-500/20 text-green-500"
-                                                onClick={(e) => {
-                                                    e.stopPropagation()
-                                                    updateSectionTitle()
-                                                }}
-                                            >
-                                                {!displaySectionTitleLoader ? <Save className="h-4 w-4" /> : <LoadingSpinner />}
-                                            </Button>
-                                            <Button
-                                                size="icon"
-                                                variant="ghost"
-                                                className="h-8 w-8 rounded-full bg-red-500/10 hover:bg-red-500/20 text-red-500"
-                                                onClick={(e) => {
-                                                    e.stopPropagation()
-                                                    setRenderEditSectionTitle(false)
-                                                    setActiveIndex(0)
-                                                    setActiveSection(null)
-                                                }}
-                                            >
-                                                <X className="h-4 w-4" />
-                                            </Button>
-                                        </div>
-                                    </div>
-                                ) : (
-                                    <div className="flex gap-4 sm:gap-0 sm:flex-row flex-col justify-between items-center w-full">
-                                        <div className="flex items-center">
-                                            <h3 className="font-medium text-white">{section.title ? section.title : "Untitled Section"}</h3>
-                                            <div className="ml-2 text-gray-400 text-sm">{section.links?.length || 0} links</div>
-                                        </div>
-                                        <div className="flex items-center space-x-1">
-                                            <Button
-                                                size="icon"
-                                                variant="ghost"
-                                                className="h-8 w-8 rounded-full bg-green-500/10 hover:bg-green-500/20 text-green-500"
-                                                onClick={(e) => {
-                                                    e.stopPropagation()
-                                                    handleCreateLinkClick(section)
-                                                }}
-                                            >
-                                                <PlusIcon className="h-4 w-4" />
-                                            </Button>
-                                            <Button
-                                                size="icon"
-                                                variant="ghost"
-                                                className="h-8 w-8 rounded-full bg-blue-500/10 hover:bg-blue-500/20 text-blue-500"
-                                                onClick={(e) => {
-                                                    e.stopPropagation()
-                                                    handleEditSectionClick(section, index)
-                                                }}
-                                            >
-                                                <Pencil className="h-4 w-4" />
-                                            </Button>
-                                            <Button
-                                                size="icon"
-                                                variant="ghost"
-                                                className="h-8 w-8 rounded-full bg-red-500/10 hover:bg-red-500/20 text-red-500"
-                                                onClick={(e) => {
-                                                    e.stopPropagation()
-                                                    removeASectionVerification(section)
-                                                }}
-                                            >
-                                                <Trash2 className="h-4 w-4" />
-                                            </Button>
-                                            <Button
-                                                size="icon"
-                                                variant="ghost"
-                                                className="h-8 w-8 rounded-full bg-gray-500/10 hover:bg-gray-500/20 text-gray-300 ml-2"
-                                                onClick={(e) => {
-                                                    e.stopPropagation()
-                                                    toggleSection(section.id)
-                                                }}
-                                            >
-                                                {expandedSections[section.id] ? (
-                                                    <ChevronUp className="h-4 w-4" />
-                                                ) : (
-                                                    <ChevronDown className="h-4 w-4" />
-                                                )}
-                                            </Button>
-                                        </div>
-                                    </div>
-                                )}
-                            </div>
+                                                className="bg-gray-700 border-gray-600 hover:border-gray-500 transition-colors">
 
-                            <AnimatePresence>
-                                {expandedSections[section.id] && (
-                                    <motion.div
-                                        initial={{ height: 0, opacity: 0 }}
-                                        animate={{ height: "auto", opacity: 1 }}
-                                        exit={{ height: 0, opacity: 0 }}
-                                        transition={{ duration: 0.3 }}
-                                    >
-                                        <DragAndDropWrapper>
-                                            <CardContent className="pt-0 pb-4 px-4 border-t border-gray-600">
+                                                <div
+                                                    className="p-4 flex justify-between items-center cursor-pointer"
+                                                    onClick={() => toggleSection(section.id)}
+                                                >
+                                                    {renderEditSectionTitle && index == activeIndex ? (
+                                                        <div className="flex justify-between items-center w-full">
+                                                            <div className="flex-1 mr-4">
+                                                                <Input
+                                                                    id="title"
+                                                                    ref={displayTitleRef}
+                                                                    value={title ? title : ""}
+                                                                    onClick={(e) => {
+                                                                        e.stopPropagation()
+                                                                    }}
+                                                                    onChange={(e) => setTitle(e.target.value)}
+                                                                    className="bg-gray-600 border-gray-500 text-white"
+                                                                />
+                                                            </div>
+                                                            <div className="flex items-center space-x-2">
+                                                                <Button
+                                                                    size="icon"
+                                                                    variant="ghost"
+                                                                    className="h-8 w-8 rounded-full bg-green-500/10 hover:bg-green-500/20 text-green-500"
+                                                                    onClick={(e) => {
+                                                                        e.stopPropagation()
+                                                                        updateSectionTitle()
+                                                                    }}
+                                                                >
+                                                                    {!displaySectionTitleLoader ? <Save className="h-4 w-4" /> : <LoadingSpinner />}
+                                                                </Button>
+                                                                <Button
+                                                                    size="icon"
+                                                                    variant="ghost"
+                                                                    className="h-8 w-8 rounded-full bg-red-500/10 hover:bg-red-500/20 text-red-500"
+                                                                    onClick={(e) => {
+                                                                        e.stopPropagation()
+                                                                        setRenderEditSectionTitle(false)
+                                                                        setActiveIndex(0)
+                                                                        setActiveSection(null)
+                                                                    }}
+                                                                >
+                                                                    <X className="h-4 w-4" />
+                                                                </Button>
+                                                            </div>
+                                                        </div>
+                                                    ) : (
 
-                                                {section.links && section.links.length > 0 ? (
-                                                    <div className="space-y-3 mt-3">
-                                                        {section.links.map((link, index) => (
-                                                            <SectionLinks
-                                                                onMove={moveSocialAccount}
-                                                                key={link.id}
-                                                                link={link}
-                                                                index={index}
-                                                                updateLink={handleEditLinkClick}
-                                                                deleteLink={removeALink}
-                                                                viewStats={() => handleViewStatsClick(link)}
-                                                            />
-                                                        ))}
-                                                    </div>
-                                                ) : (
-                                                    <div className="py-6 text-center">
-                                                        <p className="text-gray-400 mb-3">No links in this section</p>
-                                                        <Button
-                                                            variant="outline"
-                                                            size="sm"
-                                                            onClick={() => handleCreateLinkClick(section)}
-                                                            className="border-gray-500 text-gray-300"
+                                                        <div
+                                                            className="flex gap-4 sm:gap-0 sm:flex-row flex-col justify-between items-center w-full">
+                                                            <div className="flex items-center">
+                                                                <h3 className="font-medium text-white">{section.title ? section.title : "Untitled Section"}</h3>
+                                                                <div className="ml-2 text-gray-400 text-sm">{section.links?.length || 0} links</div>
+                                                            </div>
+                                                            <div className="flex items-center space-x-1">
+                                                                <Button
+                                                                    size="icon"
+                                                                    variant="ghost"
+                                                                    className="h-8 w-8 rounded-full bg-green-500/10 hover:bg-green-500/20 text-green-500"
+                                                                    onClick={(e) => {
+                                                                        e.stopPropagation()
+                                                                        handleCreateLinkClick(section)
+                                                                    }}
+                                                                >
+                                                                    <PlusIcon className="h-4 w-4" />
+                                                                </Button>
+                                                                <Button
+                                                                    size="icon"
+                                                                    variant="ghost"
+                                                                    className="h-8 w-8 rounded-full bg-blue-500/10 hover:bg-blue-500/20 text-blue-500"
+                                                                    onClick={(e) => {
+                                                                        e.stopPropagation()
+                                                                        handleEditSectionClick(section, index)
+                                                                    }}
+                                                                >
+                                                                    <Pencil className="h-4 w-4" />
+                                                                </Button>
+                                                                <Button
+                                                                    size="icon"
+                                                                    variant="ghost"
+                                                                    className="h-8 w-8 rounded-full bg-red-500/10 hover:bg-red-500/20 text-red-500"
+                                                                    onClick={(e) => {
+                                                                        e.stopPropagation()
+                                                                        removeASectionVerification(section)
+                                                                    }}
+                                                                >
+                                                                    <Trash2 className="h-4 w-4" />
+                                                                </Button>
+                                                                <Button
+                                                                    size="icon"
+                                                                    variant="ghost"
+                                                                    className="h-8 w-8 rounded-full bg-gray-500/10 hover:bg-gray-500/20 text-gray-300 ml-2"
+                                                                    onClick={(e) => {
+                                                                        e.stopPropagation()
+                                                                        toggleSection(section.id)
+                                                                    }}
+                                                                >
+                                                                    {expandedSections[section.id] ? (
+                                                                        <ChevronUp className="h-4 w-4" />
+                                                                    ) : (
+                                                                        <ChevronDown className="h-4 w-4" />
+                                                                    )}
+                                                                </Button>
+                                                            </div>
+                                                        </div>
+
+                                                    )}
+                                                </div>
+
+
+                                                <AnimatePresence>
+                                                    {expandedSections[section.id] && (
+                                                        <motion.div
+                                                            initial={{ height: 0, opacity: 0 }}
+                                                            animate={{ height: "auto", opacity: 1 }}
+                                                            exit={{ height: 0, opacity: 0 }}
+                                                            transition={{ duration: 0.3 }}
                                                         >
-                                                            <Plus className="h-4 w-4 mr-2" />
-                                                            Add First Link
-                                                        </Button>
-                                                    </div>
-                                                )}
 
-                                            </CardContent>
-                                        </DragAndDropWrapper>
-                                    </motion.div>
-                                )}
-                            </AnimatePresence>
-                        </Card>
-                    </motion.div>
-                ))}
+                                                            <CardContent className="pt-0 pb-4 px-4 border-t border-gray-600">
+                                                                <DragDropContext onDragEnd={reOrderLink}>
+                                                                    <Droppable droppableId={section.id}
+                                                                        isDropDisabled={false}
+                                                                        isCombineEnabled={false}
+                                                                        ignoreContainerClipping={false}
+                                                                        direction="vertical"
+                                                                    >
+                                                                        {(provided, snapshot) => (
 
-                {activePageAndSections.sections.length === 0 && (
-                    <div className="text-center py-10 bg-gray-800 rounded-lg border border-gray-700">
-                        <h3 className="text-gray-400 mb-4">No sections yet</h3>
-                        <Button onClick={addNewPageSectionHandler} disabled={newPageSectionLoader}>
-                            {newPageSectionLoader ? (
-                                <LoadingSpinner />
-                            ) : (
-                                <>
-                                    <Plus className="h-4 w-4 mr-2" />
-                                    Create Your First Section
-                                </>
+                                                                            section.links && section.links.length > 0 ? (
+
+
+                                                                                <div className="space-y-3 mt-3"
+                                                                                    ref={provided.innerRef}
+                                                                                    {...provided.droppableProps}
+                                                                                >
+                                                                                    {section.links.map((link, index) => (
+                                                                                        <SectionLinks
+                                                                                            key={link.id}
+                                                                                            link={link}
+                                                                                            index={index}
+                                                                                            updateLink={handleEditLinkClick}
+                                                                                            deleteLink={removeALink}
+                                                                                            viewStats={() => handleViewStatsClick(link)}
+                                                                                        />
+                                                                                    ))}
+                                                                                    {provided.placeholder}
+                                                                                </div>
+                                                                            ) : (
+                                                                                <div className="py-6 text-center">
+                                                                                    <p className="text-gray-400 mb-3">No links in this section</p>
+                                                                                    <Button
+                                                                                        variant="outline"
+                                                                                        size="sm"
+                                                                                        onClick={() => handleCreateLinkClick(section)}
+                                                                                        className="border-gray-500 text-gray-300"
+                                                                                    >
+                                                                                        <Plus className="h-4 w-4 mr-2" />
+                                                                                        Add First Link
+                                                                                    </Button>
+                                                                                </div>
+                                                                            )
+
+                                                                        )}
+                                                                    </Droppable>
+                                                                </DragDropContext>
+                                                            </CardContent>
+
+                                                        </motion.div>
+                                                    )}
+                                                </AnimatePresence>
+                                            </Card>
+                                        )}
+                                    </Draggable >
+                                </motion.div>
+                            ))}
+
+                            {activePageAndSections && activePageAndSections.sections && activePageAndSections.sections.length === 0 && (
+                                <div className="text-center py-10 bg-gray-800 rounded-lg border border-gray-700">
+                                    <h3 className="text-gray-400 mb-4">No sections yet</h3>
+                                    <Button onClick={addNewPageSectionHandler} disabled={newPageSectionLoader}>
+                                        {newPageSectionLoader ? (
+                                            <LoadingSpinner />
+                                        ) : (
+                                            <>
+                                                <Plus className="h-4 w-4 mr-2" />
+                                                Create Your First Section
+                                            </>
+                                        )}
+                                    </Button>
+                                </div>
                             )}
-                        </Button>
-                    </div>
-                )}
-            </div>
+                        </div>
+                    )}
+                </Droppable>
+            </DragDropContext>
         )
     }
 
@@ -573,20 +716,19 @@ export default function PageSection(param: PageTabProps) {
                     <CardContent>
                         <div className="flex justify-between items-center mb-6">
                             <h2 className="text-lg font-medium">Sections</h2>
-                            <Button
-                                onClick={addNewPageSectionHandler}
-                                disabled={newPageSectionLoader}
-                                className="bg-gradient-to-r from-purple-500 to-pink-500 hover:opacity-90"
-                            >
-                                {newPageSectionLoader ? (
-                                    <LoadingSpinner />
-                                ) : (
-                                    <>
-                                        <Plus className="h-4 w-4 mr-2" />
-                                        Add Section
-                                    </>
-                                )}
-                            </Button>
+                            {newPageSectionLoader ? (
+                                <LoadingSpinner />
+                            ) : (
+                                <Button
+                                    onClick={addNewPageSectionHandler}
+                                    disabled={newPageSectionLoader}
+                                    className="bg-gradient-to-r from-purple-500 to-pink-500 hover:opacity-90"
+                                >
+                                    <Plus className="h-4 w-4 mr-2" />
+                                    Add Section
+
+                                </Button>
+                            )}
                         </div>
 
                         <AnimatePresence>{renderPageSection()}</AnimatePresence>

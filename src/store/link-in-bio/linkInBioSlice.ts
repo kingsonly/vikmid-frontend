@@ -16,6 +16,10 @@ const initialState: LinkInBioState = {
     updatedAt: '',
     pages: [],
     socialLinks: [],
+    hub: {
+        id: 0,
+        hubUrl: '',
+    },
 };
 
 // Redux slice
@@ -167,7 +171,43 @@ export const linkInBioSlice = createSlice({
                 }
             }).filter(Boolean) as SocialLink[];
 
-        }
+        },
+        reorderPages: (state, action: PayloadAction<string[]>) => {
+            state.pages = action.payload
+                .map(id => state.pages.find(page => page.id === id))
+                .filter((page): page is Page => !!page);
+        },
+        // reorderSections: (state, action: PayloadAction<{ pageId: string; sectionIds: string[] }>) => {
+        //     const page = state.pages.find(p => p.id === action.payload.pageId);
+        //     if (page && page.sections) {
+        //         page.sections = action.payload.sectionIds
+        //             .map(id => page.sections.find(sec => sec.id === id))
+        //             .filter((section): section is Section => !!section);
+        //     }
+        // },
+        reorderSections: (state, action: PayloadAction<{ pageId: string; sectionIds: string[] }>) => {
+            const page = state.pages.find(p => p.id === action.payload.pageId);
+            if (page) {
+                const sectionMap = (page.sections ?? []).reduce<Record<string, Section>>((acc, section) => {
+                    acc[section.id] = section;
+                    return acc;
+                }, {});
+
+                page.sections = action.payload.sectionIds
+                    .map(id => sectionMap[id])
+                    .filter((section): section is Section => !!section);
+            }
+        },
+        reorderLinks: (state, action: PayloadAction<{ sectionId: string; linkIds: string[] }>) => {
+            for (const page of state.pages) {
+                const section = page.sections?.find(sec => sec.id === action.payload.sectionId);
+                if (section && section.links) {
+                    section.links = action.payload.linkIds
+                        .map(id => section.links?.find(link => link.id === id))
+                        .filter((link): link is Link => !!link);
+                }
+            }
+        },
     },
 });
 
@@ -191,7 +231,10 @@ export const {
     addSocialLink,
     updateSocialLink,
     removeSocialLink,
-    reorderSocialLinks
+    reorderSocialLinks,
+    reorderPages,
+    reorderSections,
+    reorderLinks,
 } = linkInBioSlice.actions;
 
 // Export reducer

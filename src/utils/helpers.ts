@@ -72,8 +72,15 @@ export const useScrollToTop = () => {
 
   // useEffect(() => {
   //   // Ensure the scroll position resets
-  //   window.scrollTo({ top: 0, behavior: "smooth" });
+  //   scrollToTop()
   // }, [router.pathname]); // Use router.pathname instead of location.pathname
+};
+
+export const scrollToTop = () => {
+  window.scrollTo({
+    top: 0,
+    behavior: 'smooth', // for smooth animation
+  });
 };
 
 export const checkIfArraysAreEqual = (arr1: string[], arr2: string[]) => {

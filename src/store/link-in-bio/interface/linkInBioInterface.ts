@@ -53,6 +53,11 @@ export interface Page {
     sections?: Section[] | null;
 }
 
+export interface Hub {
+    id: number;
+    hubUrl: string;
+}
+
 export interface LinkInBioState {
     id: string;
     hubId: number;
@@ -66,6 +71,7 @@ export interface LinkInBioState {
     updatedAt: string;
     pages: Page[];
     socialLinks?: SocialLink[] | null;
+    hub: Hub;
 }
 
 export interface PlatformPercentageInterface {

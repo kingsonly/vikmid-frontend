@@ -138,7 +138,7 @@ export default function ModalComponent({
                 <div className={`${dialogDisplay ? "fixed" : null} inset-0 z-50 bg-black/50`}>
                     <div
                         className={cn(
-                            "fixed inset-y-0 right-0 h-full w-full max-w-[40%] bg-background shadow-lg",
+                            "fixed inset-y-0 right-0 h-full w-full max-w-[40%] shadow-lg",
                             "transform transition-all duration-300 ease-in-out",
                             dialogDisplay ? "translate-x-0" : "translate-x-full",
                         )}
@@ -187,14 +187,15 @@ export default function ModalComponent({
                 </div>
             ) : (
                 // Standard modal implementation
-                <DialogContent>
+                <DialogContent className="bg-black/50 text-white">
                     <DialogHeader>
                         {title && <DialogTitle>{typeof title === "function" ? title() : title}</DialogTitle>}
                     </DialogHeader>
                     {children}
                     {withFooter && (
-                        <DialogFooter>
-                            <Button variant="outline" onClick={dialogDisplaySetter}>
+                        <DialogFooter className="bg-black/50" >
+
+                            <Button variant="outline" onClick={dialogDisplaySetter} className=" text-white bg-gradient-to-r from-pink-500 to-purple-500 hover:from-pink-600 hover:to-purple-600" >
                                 Cancel
                             </Button>
                             {!loader ? (

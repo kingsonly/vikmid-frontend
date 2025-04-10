@@ -1,6 +1,6 @@
 "use client"
 import { useState } from "react"
-import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd"
+import { DragDropContext, Droppable, Draggable } from "@hello-pangea/dnd"
 
 // Create initial data
 const initial = Array.from({ length: 10 }, (v, k) => k).map((k) => ({
@@ -12,6 +12,7 @@ const grid = 8
 
 // Helper function to reorder the list
 const reorder = (list, startIndex, endIndex) => {
+    console.log(startIndex, endIndex)
     const result = Array.from(list)
     const [removed] = result.splice(startIndex, 1)
     result.splice(endIndex, 0, removed)
