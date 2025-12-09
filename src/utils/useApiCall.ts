@@ -1,5 +1,5 @@
 'use client';
-import useTokens from "../hooks/useTokens";
+
 import axios, { AxiosRequestConfig, AxiosError } from "axios";
 import useSWR from "swr";
 import { toast } from "react-toastify";
@@ -7,6 +7,7 @@ import Cookies from "js-cookie";
 import { useState } from "react";
 import { NextRouter } from "next/router";
 import { useRouter } from 'next/navigation';
+import useTokens from "@/hooks/useTokens";
 // Create an axios instance
 const baseURL = process.env.NEXT_PUBLIC_API_URL;
 const apiClient = axios.create({

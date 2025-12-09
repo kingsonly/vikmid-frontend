@@ -190,6 +190,8 @@ export default async function CoursePage({ params }: UsernameDynamicPageInterfac
     }
 
     return (
+
+
         <div className="min-h-screen p-6" style={{ backgroundColor: themeColors.background, color: themeColors.text }}>
             <div className="max-w-6xl mx-auto">
                 <div className="mb-6 flex flex-wrap gap-4 items-center justify-between">

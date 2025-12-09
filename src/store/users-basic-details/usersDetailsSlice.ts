@@ -8,6 +8,7 @@ interface userDetailsInterface {
     isActive: boolean,
     isCreator: boolean,
     activeHub?: number,
+    id: number,
 }
 
 const initialState: userDetailsInterface = {
@@ -17,6 +18,7 @@ const initialState: userDetailsInterface = {
     plan: 0,
     isActive: false,
     isCreator: true,
+    id: 0
     // activeHub: 0,
 };
 

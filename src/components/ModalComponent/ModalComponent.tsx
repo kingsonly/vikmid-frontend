@@ -139,7 +139,7 @@ export default function ModalComponent({
                     <div
                         className={cn(
                             "fixed inset-y-0 right-0 h-full w-full max-w-[40%] shadow-lg",
-                            "transform transition-all duration-300 ease-in-out",
+                            "transform transition-all duration-300 ease-in-out bg-black",
                             dialogDisplay ? "translate-x-0" : "translate-x-full",
                         )}
                     >

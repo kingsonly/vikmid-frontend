@@ -45,7 +45,16 @@ import { VideoPlayer } from "@/components/courses/video-player"
 import type { Course, Topic, Lesson } from "@/components/courses/types"
 import { CourseList } from "@/components/courses/CourseList"
 import { CourseContent } from "@/components/courses/CourseContent"
-
+import ModalComponent from "../ModalComponent/ModalComponent"
+import CreateNewCourse from "./Forms/CreateNewCourse"
+import DeleteConfirm from "../DeleteConfirm/DeleteConfirm"
+import { Course as CourseInterface } from "@/store/course/interface/CourseInterface"
+import { useApiCall } from "@/utils/useApiCall"
+import { useDispatch } from "react-redux"
+import { useSelector } from "react-redux"
+import { deleteCourse } from "@/store/course/CourseSlice"
+import CourseDetails from "./CourseDetails"
+import { setSelectedCourse as setSelectedCourseRedux } from "@/store/course/selectedCourseSlice"
 type ContentItem = {
   id: string
   title: string
@@ -59,6 +68,10 @@ type ContentItem = {
 }
 
 export function CourseManagement() {
+  const { apiCall } = useApiCall();
+  const dispatch = useDispatch();
+  const user = useSelector((state: any) => state.userDetails);
+  const activeHub = user?.activeHub;
   const [courses, setCourses] = useState<Course[]>([])
   const [displayedCourses, setDisplayedCourses] = useState<Course[]>([])
   const [selectedCourse, setSelectedCourse] = useState<Course | null>(null)
@@ -104,6 +117,10 @@ export function CourseManagement() {
   const [isPageLoading, setIsPageLoading] = useState(true)
   const [isCourseManagementLoading, setIsCourseManagementLoading] = useState(false)
   const [editingLesson, setEditingLesson] = useState<Lesson | null>(null)
+  const [deleteCourseLoader, setDeleteCourseLoader] = useState<boolean>(false)
+  const [isDeleteCourseDialogOpen, setIsDeleteCourseDialogOpen] = useState<boolean>(false)
+  const [activeCourse, setActiveCourse] = useState<CourseInterface | null>(null)
+  const [isActiveCourseDetails, setIsActiveCourseDetails] = useState<boolean>(false)
 
   useEffect(() => {
     const fetchCourses = async () => {
@@ -229,10 +246,7 @@ export function CourseManagement() {
     }
   }
 
-  const handleDeleteCourse = (id: number) => {
-    setCourses((prevCourses) => prevCourses.filter((course) => course.id !== id))
-    setDisplayedCourses((prevDisplayed) => prevDisplayed.filter((course) => course.id !== id))
-  }
+
 
   const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0]
@@ -490,6 +504,7 @@ export function CourseManagement() {
       setIsCourseManagementLoading(false)
     }
   }
+
 
   const renderCourseManagement = () => (
     <div className="space-y-6">
@@ -780,18 +795,56 @@ export function CourseManagement() {
     </div>
   )
 
+  const onCloseCourseModal = () => {
+    setIsCreatingCourse(false)
+  }
+
+  // kingsOnly started here 
+  const handleDeleteCourse = async () => {
+    if (!activeCourse) return
+    try {
+      setDeleteCourseLoader(true)
+      const response = await apiCall({
+        endpoint: `/courses/${activeCourse.id}/${activeHub}`,
+        method: "delete",
+      }
+      );
+      if (response) {
+        dispatch(deleteCourse(activeCourse.id))
+        setDeleteCourseLoader(false)
+        setIsDeleteCourseDialogOpenHandler()
+      }
+      setActiveCourse(null)
+
+    } catch (error: any) {
+      setDeleteCourseLoader(false)
+    }
+  }
+
+  const setIsDeleteCourseDialogOpenHandler = () => {
+    setActiveCourse(null)
+    setIsDeleteCourseDialogOpen(false)
+  }
+
+  const triggerDelete = async (course: CourseInterface) => {
+    setActiveCourse(course)
+    setIsDeleteCourseDialogOpen(true)
+  }
+  const onCloseCourseDetailsModal = async () => {
+    setIsActiveCourseDetails(false)
+    setActiveCourse(null)
+  }
+  const displayCourseDetails = async (course: CourseInterface) => {
+    setActiveCourse(course)
+    dispatch(setSelectedCourseRedux(course))
+    setIsActiveCourseDetails(true)
+  }
+
   return (
     <div className="flex flex-col min-h-screen bg-gray-900 text-gray-100 w-full">
       <main className="flex-1 p-4 sm:p-6 lg:p-8 overflow-auto">
         <div className="max-w-7xl mx-auto ">
-          {statusMessage && (
-            <div
-              className={`fixed top-4 right-4 p-4 rounded-md ${statusMessage.type === "success" ? "bg-green-500" : "bg-red-500"
-                } text-white`}
-            >
-              {statusMessage.message}
-            </div>
-          )}
+
           <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold mb-6 sm:mb-8 bg-clip-text text-transparent bg-gradient-to-r from-pink-500 to-purple-500">
             Course Management
           </h1>
@@ -799,181 +852,39 @@ export function CourseManagement() {
             renderCourseManagement()
           ) : (
             <CourseList
-              courses={displayedCourses}
-              isPageLoading={isPageLoading}
               onCreateCourse={() => setIsCreatingCourse(true)}
-              onManageCourse={setSelectedCourse}
-              onDeleteCourse={handleDeleteCourse}
+              deleteCourse={triggerDelete}
+              manageCourse={displayCourseDetails}
+
             />
           )}
 
-          <Dialog open={isCreatingCourse} onOpenChange={setIsCreatingCourse}>
-            <DialogContent className="bg-gray-800 text-white overflow-auto sm:max-w-[425px] max-w-[90vw] max-h-[90vh]">
-              <DialogHeader>
-                <DialogTitle className="text-xl sm:text-2xl">Create New Course</DialogTitle>
-                <DialogDescription className="text-sm sm:text-base">
-                  Fill in the details to create a new course.
-                </DialogDescription>
-              </DialogHeader>
-              <div className="space-y-4 mt-4">
-                <div>
-                  <Label htmlFor="course-title" className="text-sm font-medium">
-                    Course Title
-                  </Label>
-                  <Input
-                    id="course-title"
-                    value={newCourse.title}
-                    onChange={(e) => setNewCourse({ ...newCourse, title: e.target.value })}
-                    placeholder="Enter course title"
-                    className={`bg-gray-700 border-gray-600 mt-1 w-full ${errors.title ? "border-red-500" : ""}`}
-                  />
-                  {errors.title && <p className="text-sm text-red-500 mt-1">{errors.title}</p>}
-                </div>
-                <div>
-                  <Label htmlFor="course-description" className="text-sm font-medium">
-                    Course Description
-                  </Label>
-                  <Textarea
-                    id="course-description"
-                    value={newCourse.description}
-                    onChange={(e) =>
-                      setNewCourse({
-                        ...newCourse,
-                        description: e.target.value,
-                      })
-                    }
-                    placeholder="Enter course description"
-                    className={`bg-gray-700 border-gray-600 mt-1 w-full ${errors.description ? "border-red-500" : ""}`}
-                  />
-                  {errors.description && <p className="text-sm text-red-500 mt-1">{errors.description}</p>}
-                </div>
-                <div>
-                  <Label htmlFor="course-price" className="text-sm font-medium">
-                    Course Price (₦)
-                  </Label>
-                  <Input
-                    id="course-price"
-                    type="number"
-                    value={newCourse.price}
-                    onChange={(e) =>
-                      setNewCourse({
-                        ...newCourse,
-                        price: Number.parseFloat(e.target.value),
-                      })
-                    }
-                    placeholder="Enter course price"
-                    className={`bg-gray-700 border-gray-600 mt-1 w-full ${errors.price ? "border-red-500" : ""}`}
-                  />
-                  {errors.price && <p className="text-sm text-red-500 mt-1">{errors.price}</p>}
-                </div>
-                <div>
-                  <Label htmlFor="course-banner" className="text-sm font-medium">
-                    Course Banner
-                  </Label>
-                  <div className="flex flex-col sm:flex-row items-start sm:items-center space-y-2 sm:space-y-0 sm:space-x-4 mt-1">
-                    {newCourse.banner && (
-                      <Image
-                        src={newCourse.banner || "/placeholder.svg"}
-                        alt="Course banner"
-                        width={100}
-                        height={50}
-                        className="rounded-lg object-cover"
-                      />
-                    )}
-                    <Button onClick={() => fileInputRef.current?.click()} className="w-full sm:w-auto">
-                      Upload Image
-                    </Button>
-                    <input
-                      type="file"
-                      ref={fileInputRef}
-                      onChange={handleImageUpload}
-                      accept="image/*"
-                      className="hidden"
-                    />
-                  </div>
-                </div>
-              </div>
-              <DialogFooter className="mt-6 flex flex-col sm:flex-row sm:justify-end space-y-2 sm:space-y-0 sm:space-x-2">
-                <Button
-                  onClick={() => setIsCreatingCourse(false)}
-                  className="w-full sm:w-auto"
-                  disabled={isCreatingCourseLoading}
-                >
-                  Cancel
-                </Button>
-                <Button
-                  onClick={handleCreateCourse}
-                  className="w-full sm:w-auto bg-gradient-to-r from-pink-500 to-purple-500 hover:from-pink-600 hover:to-purple-600"
-                  disabled={isCreatingCourseLoading}
-                >
-                  {isCreatingCourseLoading ? (
-                    <>
-                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                      Creating...
-                    </>
-                  ) : (
-                    "Create Course"
-                  )}
-                </Button>
-              </DialogFooter>
-            </DialogContent>
-          </Dialog>
-          {selectedLesson && selectedLesson.type === "video" && (
-            <Dialog open={!!selectedLesson} onOpenChange={() => setSelectedLesson(null)}>
-              <DialogContent className="bg-gray-800 text-white max-w-4xl">
-                <DialogHeader>
-                  <DialogTitle>{selectedLesson.title}</DialogTitle>
-                </DialogHeader>
-                <video src={selectedLesson.url} controls className="w-full" />
-              </DialogContent>
-            </Dialog>
-          )}
-          <Dialog open={isConfirmingDelete} onOpenChange={setIsConfirmingDelete}>
-            <DialogContent className="bg-gray-800 text-white">
-              <DialogHeader>
-                <DialogTitle>Confirm Deletion</DialogTitle>
-              </DialogHeader>
-              <p>Are you sure you want to delete this topic? This action cannot be undone.</p>
-              <DialogFooter>
-                <Button onClick={() => setIsConfirmingDelete(false)} disabled={isCourseManagementLoading}>
-                  Cancel
-                </Button>
-                <Button variant="destructive" onClick={handleDeleteTopic} disabled={isCourseManagementLoading}>
-                  {isCourseManagementLoading ? (
-                    <>
-                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                      Deleting...
-                    </>
-                  ) : (
-                    "Delete"
-                  )}
-                </Button>
-              </DialogFooter>
-            </DialogContent>
-          </Dialog>
-          <Dialog open={isConfirminglessonDelete} onOpenChange={setIsConfirmingLessonDelete}>
-            <DialogContent className="bg-gray-800 text-white">
-              <DialogHeader>
-                <DialogTitle>Confirm Deletion</DialogTitle>
-              </DialogHeader>
-              <p>Are you sure you want to delete this Lesson? This action cannot be undone.</p>
-              <DialogFooter>
-                <Button onClick={() => setIsConfirmingLessonDelete(false)} disabled={isCourseManagementLoading}>
-                  Cancel
-                </Button>
-                <Button variant="destructive" onClick={handleDeleteLesson} disabled={isCourseManagementLoading}>
-                  {isCourseManagementLoading ? (
-                    <>
-                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                      Deleting...
-                    </>
-                  ) : (
-                    "Delete"
-                  )}
-                </Button>
-              </DialogFooter>
-            </DialogContent>
-          </Dialog>
+
+          <ModalComponent
+            dialogDisplay={isCreatingCourse}
+            dialogDisplaySetter={onCloseCourseModal}
+            title={"Create New Course"}
+            showInSide={true}
+          >
+            <CreateNewCourse onClose={onCloseCourseModal} />
+
+          </ModalComponent>
+          <DeleteConfirm
+            dialogDisplay={isDeleteCourseDialogOpen}
+            dialogDisplaySetter={setIsDeleteCourseDialogOpenHandler}
+            handleDelete={handleDeleteCourse}
+            loader={deleteCourseLoader}
+            text={"Are you sure you want to delete this Page? This action cannot be undone."} />
+
+          <ModalComponent
+            dialogDisplay={isActiveCourseDetails}
+            dialogDisplaySetter={onCloseCourseDetailsModal}
+            title={activeCourse ? activeCourse.title : "No course Selected"}
+            showInSide={true}
+          >
+            <CourseDetails course={activeCourse as CourseInterface} />
+
+          </ModalComponent>
         </div>
       </main>
     </div>

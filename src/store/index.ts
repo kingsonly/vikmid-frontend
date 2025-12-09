@@ -4,12 +4,16 @@ import storage from 'redux-persist/lib/storage'; // Default to localStorage for 
 import counterReducer from './slices/counterSlice';
 import usersDetailsSlice from './users-basic-details/usersDetailsSlice';
 import linkInBioSlice from './link-in-bio/linkInBioSlice';
+import CourseSlice from './course/CourseSlice';
+import selectedCourseSlice from './course/selectedCourseSlice';
 
 
 const rootReducer = combineReducers({
     counter: counterReducer,
     userDetails: usersDetailsSlice,
     linkInBio: linkInBioSlice,
+    courses: CourseSlice,
+    selectedCourse: selectedCourseSlice,
 });
 
 // Persist configuration
